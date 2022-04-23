@@ -22,6 +22,10 @@ inputs:
     description: "This gets run into bash, use the full command"
     required: false
     default: ""
+  deno-working-directory:
+    description: "This gets run into bash, use the full command"
+    required: false
+    default: "."
   deno-version:
     description: "Deno version to use"
     required: false
@@ -86,6 +90,7 @@ runs:
     - name: Run Deno Command
       if: ${{inputs.deno-build}} != ''
       shell: bash
+      working-directory: ${{inputs.deno-working-directory}}
       run: ${{inputs.deno-build}}
     # install wails
     - name: Install Wails
