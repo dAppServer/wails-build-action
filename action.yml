@@ -55,5 +55,5 @@ runs:
       run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
       shell: bash
     - name: Build App
-      run: wails build --platform ${{inputs.go-version}}
+      run: wails build --platform ${{inputs.platform}}
       shell: bash
