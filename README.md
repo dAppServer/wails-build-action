@@ -23,12 +23,12 @@ jobs:
           path: build/bin/*
 ```
 
-| Name                | Default            | Description           |
-|---------------------|--------------------|-----------------------|
-| `build-platform`         | `darwin/universal` | Platform to build for |
-| `wails-version`             | `latest`           |          Wails version to use             |
-| `go-version`           | `1.17`             |             Version of Go to use          |
-| `node-version`        | `16.x`             |            Node js version           |
-| `deno-build`    | ``                 |            This gets run into bash, use the full command           |
-| `deno-working-directory`    | `.`                |         This gets run into bash, use the full command              |
-| `deno-version`    | `v1.20.x`                 | Deno version to use   |
+| Name                     | Default            | Description                                   |
+|--------------------------|--------------------|-----------------------------------------------|
+| `build-platform`         | `darwin/universal` | Platform to build for                         |
+| `wails-version`          | `latest`           | Wails version to use                          |
+| `go-version`             | `1.17`             | Version of Go to use                          |
+| `node-version`           | `16.x`             | Node js version                               |
+| `deno-build`             | ``                 | This gets run into bash, use the full command |
+| `deno-working-directory` | `.`                | This gets run into bash, use the full command |
+| `deno-version`           | `v1.20.x`          | Deno version to use                           |
