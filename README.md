@@ -2,6 +2,12 @@
 GitHub action to build Wails.io, the action will install GoLang, NodeJS and run a build.
 this is to be used on a [Wails.io](https://wails.io) v2 project.
 
+```yaml
+- uses: letheanVPN/wails-build-action@v1
+  with:
+    build-platform: linux/amd64
+```
+
 | Name                     | Default            | Description                                        |
 |--------------------------|--------------------|----------------------------------------------------|
 | `build-platform`         | `darwin/universal` | Platform to build for                              |
