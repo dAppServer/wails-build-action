@@ -1,0 +1,59 @@
+name: "Wails Build Action"
+description: "Creates a wails binary"
+
+inputs:
+  platform:
+    description: "Platform to build for"
+    required: false
+    default: "darwin/universal"
+  go-version:
+    description: "Version of Go to use"
+    required: false
+    default: "1.17"
+  node-version:
+    description: "Node js version"
+    required: false
+    default: "16.x"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup GoLang
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{inputs.go-version}}
+    - name: Setup NodeJS
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{inputs.node-version}}
+    - name: Go Cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          %LocalAppData%\go-build
+          ~\go\pkg\mod
+          ~/Library/Caches/go-build
+          ~/go/pkg/mod
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - name: Get npm cache directory
+      id: npm-cache-dir
+      shell: bash
+      run: |
+        echo "::set-output name=dir::$(npm config get cache)"
+    - uses: actions/cache@v3
+      id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+      with:
+        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Install Wails
+      run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      shell: bash
+    - name: Build App
+      run: wails build --platform ${{inputs.go-version}}
+      shell: bash
