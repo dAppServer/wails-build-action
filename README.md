@@ -2,30 +2,6 @@
 GitHub action to build Wails.io, the action will install GoLang, NodeJS and run a build.
 this is to be used on a [Wails.io](https://wails.io) v2 project.
 
-
-
-```yaml
-name: Wails build
-
-on: [push, pull_request]
- 
-jobs:
-  linux:
-    runs-on: ubuntu-latest
-    steps:
-      # Checkout code
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - uses: letheanVPN/wails-build-action@main
-        with:
-          build-platform: linux/amd64
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Linux Desktop
-          path: build/bin/*
-```
-
 | Name                     | Default            | Description                                        |
 |--------------------------|--------------------|----------------------------------------------------|
 | `build-platform`         | `darwin/universal` | Platform to build for                              |
@@ -36,3 +12,71 @@ jobs:
 | `deno-build`             | ``                 | This gets run into bash, use the full command      |
 | `deno-working-directory` | `.`                | This gets run into bash, use the full command      |
 | `deno-version`           | `v1.20.x`          | Deno version to use                                |
+
+
+# Example Build
+
+```yaml
+name: Wails build
+
+on: [push, pull_request]
+ 
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: letheanVPN/wails-build-action@v1
+        with:
+          build-platform: linux/amd64
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Linux Desktop
+          path: build/bin/*
+      - name: Release on tagged build
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            build/bin/*
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: letheanVPN/wails-build-action@v1
+        with:
+          build-platform: windows/amd64
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Windows Desktop
+          path: build\bin\*
+      - name: Release on tagged build
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            build\bin\*
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: letheanVPN/wails-build-action@v1
+        with:
+          build-platform: darwin/universal
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macOS Desktop
+          path: build/bin/*
+      - name: Release on tagged build
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            build/bin/*
+```
