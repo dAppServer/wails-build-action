@@ -10,6 +10,10 @@ inputs:
     description: "Wails version to use"
     required: false
     default: "latest"
+  wails-build-webview2:
+    description: "Webview2 installer method [download,embed,browser,error]"
+    required: false
+    default: "download"
   go-version:
     description: "Version of Go to use"
     required: false
@@ -106,7 +110,7 @@ runs:
       shell: bash
     # Building step
     - name: Build App
-      run: wails build --platform ${{inputs.build-platform}}
+      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}}
       shell: bash
     - name: Add macOS perms
       if:  runner.os == 'macOS'
