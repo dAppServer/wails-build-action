@@ -95,6 +95,18 @@ runs:
       if: ${{ runner.os }} == 'Linux'
       run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-dev
       shell: bash
+    - name: Install macOS Wails deps
+      if: ${{ runner.os }} == 'macOS'
+      run: brew install mitchellh/gon/gon
+      shell: bash
     - name: Build App
       run: wails build --platform ${{inputs.build-platform}}
+      shell: bash
+    - name: Add macOS perms
+      if: ${{ runner.os }} == 'macOS'
+      run: chmod +x build/bin/*/Contents/MacOS/*
+      shell: bash
+    - name: Add Linux perms
+      if: ${{ runner.os }} == 'Linux'
+      run: chmod +x build/bin/*
       shell: bash
