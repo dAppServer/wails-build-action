@@ -73,12 +73,12 @@ runs:
     # (Optional) Setup and configure Deno
     - name: Setup Deno
       uses: denoland/setup-deno@v1
-      if: ${{inputs.deno-build}} != ''
+      if: inputs.deno-build != ''
       with:
         deno-version: ${{inputs.deno-version}}
     - name: Setup Deno Cache
       uses: actions/cache@v3
-      if: ${{inputs.deno-build}} != ''
+      if: inputs.deno-build != ''
       with:
         path: |
           ~/.deno
@@ -88,7 +88,7 @@ runs:
           %LocalAppData%\deno
         key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
     - name: Run Deno Command
-      if: ${{inputs.deno-build}} != ''
+      if: inputs.deno-build != ''
       shell: bash
       working-directory: ${{inputs.deno-working-directory}}
       run: ${{inputs.deno-build}}
@@ -97,21 +97,22 @@ runs:
       run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
       shell: bash
     - name: Install Linux Wails deps
-      if: ${{ runner.os }} == 'Linux'
+      if: runner.os == 'Linux'
       run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-dev
       shell: bash
     - name: Install macOS Wails deps
-      if: ${{ runner.os }} == 'macOS'
+      if: runner.os == 'macOS'
       run: brew install mitchellh/gon/gon
       shell: bash
+    # Building step
     - name: Build App
       run: wails build --platform ${{inputs.build-platform}}
       shell: bash
     - name: Add macOS perms
-      if: ${{ runner.os }} == 'macOS'
+      if:  runner.os == 'macOS'
       run: chmod +x build/bin/*/Contents/MacOS/*
       shell: bash
     - name: Add Linux perms
-      if: ${{ runner.os }} == 'Linux'
+      if: runner.os  == 'Linux'
       run: chmod +x build/bin/*
       shell: bash
