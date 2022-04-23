@@ -2,10 +2,14 @@ name: "Wails Build Action"
 description: "Creates a wails binary"
 
 inputs:
-  platform:
+  build-platform:
     description: "Platform to build for"
     required: false
     default: "darwin/universal"
+  wails-version:
+    description: "Wails version to use"
+    required: false
+    default: "latest"
   go-version:
     description: "Version of Go to use"
     required: false
@@ -14,19 +18,24 @@ inputs:
     description: "Node js version"
     required: false
     default: "16.x"
+  deno-build:
+    description: "This gets run into bash, use the full command"
+    required: false
+    default: ""
+  deno-version:
+    description: "Deno version to use"
+    required: false
+    default: "v1.20.x"
 
 runs:
   using: "composite"
   steps:
+    # Setup and configure GoLang
     - name: Setup GoLang
       uses: actions/setup-go@v2
       with:
         go-version: ${{inputs.go-version}}
-    - name: Setup NodeJS
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{inputs.node-version}}
-    - name: Go Cache
+    - name: Setup Go Cache
       uses: actions/cache@v3
       with:
         path: |
@@ -39,21 +48,49 @@ runs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
+    # Setup and configure NodeJS
+    - name: Setup NodeJS
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{inputs.node-version}}
     - name: Get npm cache directory
       id: npm-cache-dir
       shell: bash
       run: |
         echo "::set-output name=dir::$(npm config get cache)"
-    - uses: actions/cache@v3
+    - name: Setup NodeJS cache
+      uses: actions/cache@v3
       id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
       with:
         path: ${{ steps.npm-cache-dir.outputs.dir }}
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
+    # (Optional) Setup and configure Deno
+    - name: Setup Deno
+      uses: denoland/setup-deno@v1
+      if: ${{inputs.deno-build}} != ''
+      with:
+        deno-version: ${{inputs.deno-version}}
+    - name: Setup Deno Cache
+      uses: actions/cache@v3
+      if: ${{inputs.deno-build}} != ''
+      with:
+        path: |
+          ~/.deno
+          ~/.cache/deno
+          ~/Library/Caches/deno
+          ~\.deno
+          %LocalAppData%\deno
+        key: ${{ runner.os }}-deno-${{ hashFiles('**/deps.ts') }}
+    - name: Run Deno Command
+      if: ${{inputs.deno-build}} != ''
+      shell: bash
+      run: ${{inputs.deno-build}}
+    # install wails
     - name: Install Wails
-      run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
       shell: bash
     - name: Build App
-      run: wails build --platform ${{inputs.platform}}
+      run: wails build --platform ${{inputs.build-platform}}
       shell: bash
