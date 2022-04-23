@@ -91,6 +91,10 @@ runs:
     - name: Install Wails
       run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
       shell: bash
+    - name: Install Linux Wails deps
+      if: ${{ runner.os }} == 'Linux'
+      run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-dev
+      shell: bash
     - name: Build App
       run: wails build --platform ${{inputs.build-platform}}
       shell: bash
