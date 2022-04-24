@@ -5,22 +5,26 @@ this is to be used on a [Wails.io](https://wails.io) v2 project.
 ```yaml
 - uses: letheanVPN/wails-build-action@v1
   with:
+    build-name: wailsApp
     build-platform: linux/amd64
 ```
 
-| Name                     | Default            | Description                                        |
-|--------------------------|--------------------|----------------------------------------------------|
-| `build-platform`         | `darwin/universal` | Platform to build for                              |
-| `wails-version`          | `latest`           | Wails version to use                               |
-| `wails-build-webview2`   | `download`         | Webview2 installing [download,embed,browser,error] |
-| `go-version`             | `1.17`             | Version of Go to use                               |
-| `node-version`           | `16.x`             | Node js version                                    |
-| `deno-build`             | ``                 | This gets run into bash, use the full command      |
-| `deno-working-directory` | `.`                | This gets run into bash, use the full command      |
-| `deno-version`           | `v1.20.x`          | Deno version to use                                |
+## GitHub Action Options
+
+| Name                     | Default              | Description                                        |
+|--------------------------|----------------------|----------------------------------------------------|
+| `build-name`             | none, required input | The name of the binary                             |
+| `build-platform`         | `darwin/universal`   | Platform to build for                              |
+| `wails-version`          | `latest`             | Wails version to use                               |
+| `wails-build-webview2`   | `download`           | Webview2 installing [download,embed,browser,error] |
+| `go-version`             | `1.17`               | Version of Go to use                               |
+| `node-version`           | `16.x`               | Node js version                                    |
+| `deno-build`             | ``                   | This gets run into bash, use the full command      |
+| `deno-working-directory` | `.`                  | This gets run into bash, use the full command      |
+| `deno-version`           | `v1.20.x`            | Deno version to use                                |
 
 
-# Example Build
+## Example Build
 
 ```yaml
 name: Wails build
@@ -36,6 +40,7 @@ jobs:
           submodules: recursive
       - uses: letheanVPN/wails-build-action@v1
         with:
+          build-name: wailsApp
           build-platform: linux/amd64
       - uses: actions/upload-artifact@v2
         with:
@@ -55,6 +60,7 @@ jobs:
           submodules: recursive
       - uses: letheanVPN/wails-build-action@v1
         with:
+          build-name: wailsApp
           build-platform: windows/amd64
       - uses: actions/upload-artifact@v2
         with:
@@ -74,6 +80,7 @@ jobs:
           submodules: recursive
       - uses: letheanVPN/wails-build-action@v1
         with:
+          build-name: wailsApp
           build-platform: darwin/universal
       - uses: actions/upload-artifact@v2
         with:
