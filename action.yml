@@ -141,28 +141,28 @@ runs:
       run: ${{inputs.deno-build}}
     # install wails
     - name: Install Wails
-      if: inputs.build == "true"
+      if: inputs.build == 'true'
       run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
       shell: bash
     - name: Install Linux Wails deps
-      if: inputs.build == "true" && runner.os == 'Linux'
+      if: inputs.build == 'true' && runner.os == 'Linux'
       run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-dev
       shell: bash
     - name: Install macOS Wails deps
-      if: inputs.sign == "true" && runner.os == 'macOS'
+      if: inputs.sign == 'true' && runner.os == 'macOS'
       run: brew install mitchellh/gon/gon
       shell: bash
     # Building step
     - name: Build App
-      if: inputs.build == "true"
+      if: inputs.build == 'true'
       run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}}
       shell: bash
     - name: Add macOS perms
-      if: inputs.build == "true" && runner.os == 'macOS'
+      if: inputs.build == 'true' && runner.os == 'macOS'
       run: chmod +x build/bin/*/Contents/MacOS/*
       shell: bash
     - name: Add Linux perms
-      if: inputs.build == "true" && runner.os  == 'Linux'
+      if: inputs.build == 'true' && runner.os  == 'Linux'
       run: chmod +x build/bin/*
       shell: bash
     # Package and Sign MacOS
@@ -207,7 +207,7 @@ runs:
 
     # Upload build assets
     - uses: actions/upload-artifact@v2
-      if: inputs.package == "true"
+      if: inputs.package == 'true'
       with:
         name: Wails ${{ runner.os }} Build
         path: |
@@ -215,7 +215,7 @@ runs:
           build\bin\
     - name: Release
       uses: softprops/action-gh-release@v1
-      if: inputs.package == "true" && startsWith(github.ref, 'refs/tags/')
+      if: inputs.package == 'true' && startsWith(github.ref, 'refs/tags/')
       with:
         files: |
           build/bin/*
