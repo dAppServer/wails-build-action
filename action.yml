@@ -77,6 +77,14 @@ inputs:
     description: "MacOS Installer Certificate Password"
     required: false
     default: ''
+  sign-windows-cert:
+    description: "Windows Signing Certificate"
+    required: false
+    default: ''
+  sign-windows-cert-password:
+    description: "Windows Signing Certificate Password"
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -209,6 +217,17 @@ runs:
       shell: bash
       run: |
         gon -log-level=info ./build/darwin/gon-notarize.json      
+    # Windows signing
+    - name: Sign Windows binaries
+      shell: powershell
+      if: runner.os == 'Windows'
+      run: |
+        echo "Creating certificate file"
+        New-Item -ItemType directory -Path certificate
+        Set-Content -Path certificate\certificate.txt -Value '${{ inputs.sign-windows-cert }}'
+        certutil -decode certificate\certificate.txt certificate\certificate.pfx
+        echo "Signing our binaries"
+        & 'C:/Program Files (x86)/Windows Kits/10/bin/10.0.17763.0/x86/signtool.exe' sign /fd sha256 /tr http://ts.ssl.com /f certificate\certificate.pfx /p '${{ inputs.sign-windows-cert-password }}' .\build\bin\${{inputs.build-name}}.exe
 
     # Upload build assets
     - uses: actions/upload-artifact@v2

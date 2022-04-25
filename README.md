@@ -44,11 +44,13 @@ By default, the action will build and upload the results to github, on a tagged 
 | `sign-macos-installer-id`            | ''                   | MacOS Installer Certificate id                     |
 | `sign-macos-installer-cert`          | ''                   | MacOS Installer Certificate                        |
 | `sign-macos-installer-cert-password` | ''                   | MacOS Installer Certificate Password               |
+| `sign-windows-cert`                  | ''                   | Windows Signing Certificate                        |
+| `sign-windows-cert-passowrd`         | ''                   | Windows Signing Certificate Password               |
 
 ## Example with Code signing
 
 ```yaml
-    - uses: letheanVPN/wails-build-action@v1
+  - uses: letheanVPN/wails-build-action@v1
     with:
       build-name: wailsApp
       sign: true
@@ -80,16 +82,6 @@ jobs:
         with:
           build-name: wailsApp
           build-platform: linux/amd64
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Linux Desktop
-          path: build/bin/*
-      - name: Release on tagged build
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            build/bin/*
   windows:
     runs-on: windows-2022
     steps:
@@ -100,16 +92,6 @@ jobs:
         with:
           build-name: wailsApp
           build-platform: windows/amd64
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Windows Desktop
-          path: build\bin\*
-      - name: Release on tagged build
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            build\bin\*
   macos:
     runs-on: macos-latest
     steps:
@@ -120,14 +102,4 @@ jobs:
         with:
           build-name: wailsApp
           build-platform: darwin/universal
-      - uses: actions/upload-artifact@v2
-        with:
-          name: macOS Desktop
-          path: build/bin/*
-      - name: Release on tagged build
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: |
-            build/bin/*
 ```
