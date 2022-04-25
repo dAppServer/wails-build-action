@@ -159,14 +159,14 @@ runs:
         keychain-password: ${{ inputs.sign-macos-apple-password }}
         p12-file-base64: ${{ inputs.sign-macos-app-cert }}
         p12-password: ${{ inputs.sign-macos-app-cert-password }}
-      - name: Import Code-Signing Certificates for macOS Installer
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: Apple-Actions/import-codesign-certs@v1
-        with:
-          keychain-password: ${{ inputs.sign-macos-apple-password }}
-          p12-file-base64: ${{ inputs.sign-macos-installer-cert }}
-          p12-password: ${{ inputs.sign-macos-app-installer-password }}
-          create-keychain: false
+    - name: Import Code-Signing Certificates for macOS Installer
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: Apple-Actions/import-codesign-certs@v1
+      with:
+        keychain-password: ${{ inputs.sign-macos-apple-password }}
+        p12-file-base64: ${{ inputs.sign-macos-installer-cert }}
+        p12-password: ${{ inputs.sign-macos-app-installer-password }}
+        create-keychain: false
     - name: Sign our macOS binary
       if: runner.os == 'macOS' && inputs.sign-macos-app-cert != '' && startsWith(github.ref, 'refs/tags/')
       shell: bash
