@@ -167,14 +167,14 @@ runs:
       shell: bash
     # Package and Sign MacOS
     - name: Import Code-Signing Certificates for macOS
-      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign != 'false' && startsWith(github.ref, 'refs/tags/')
       uses: Apple-Actions/import-codesign-certs@v1
       with:
         keychain-password: ${{ inputs.sign-macos-apple-password }}
         p12-file-base64: ${{ inputs.sign-macos-app-cert }}
         p12-password: ${{ inputs.sign-macos-app-cert-password }}
     - name: Import Code-Signing Certificates for macOS Installer
-      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign != 'false' && startsWith(github.ref, 'refs/tags/')
       uses: Apple-Actions/import-codesign-certs@v1
       with:
         keychain-password: ${{ inputs.sign-macos-apple-password }}
@@ -182,7 +182,7 @@ runs:
         p12-password: ${{ inputs.sign-macos-app-installer-password }}
         create-keychain: false
     - name: Sign our macOS binary
-      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign != 'false' && startsWith(github.ref, 'refs/tags/')
       shell: bash
       env:
         APPLE_PASSWORD: ${{ inputs.sign-macos-apple-password }}
@@ -190,17 +190,22 @@ runs:
         echo "Signing Package"
         gon -log-level=info ./build/darwin/gon-sign.json
     - name: Build .app zip file
-      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign != 'false' && startsWith(github.ref, 'refs/tags/')
       shell: bash
       run: |
         ditto -c -k --keepParent ./build/bin/${{inputs.build-name}}.app ./build/bin/${{inputs.build-name}}.app.zip
     - name: Building Installer
-      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign != 'false' && inputs.sign-macos-installer-id != '' && startsWith(github.ref, 'refs/tags/')
       shell: bash
       run: |
         productbuild --sign '${{inputs.sign-macos-installer-id}}' --component ./build/bin/${{inputs.build-name}}.app ./build/bin/${{inputs.build-name}}.pkg
+    - name: Building Installer
+      if: runner.os == 'macOS' && inputs.sign-macos-installer-id == '' && startsWith(github.ref, 'refs/tags/')
+      shell: bash
+      run: |
+        productbuild --component ./build/bin/${{inputs.build-name}}.app ./build/bin/${{inputs.build-name}}.pkg
     - name: Notarising Installer and zip
-      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign != 'false' && startsWith(github.ref, 'refs/tags/')
       shell: bash
       run: |
         gon -log-level=info ./build/darwin/gon-notarize.json      
@@ -212,7 +217,7 @@ runs:
         name: Wails ${{ runner.os }} Build
         path: |
           build/bin/
-          build\bin\
+          build\bin\*
     - name: Release
       uses: softprops/action-gh-release@v1
       if: inputs.package == 'true' && startsWith(github.ref, 'refs/tags/')
