@@ -2,6 +2,18 @@ name: "Wails Build Action"
 description: "Creates a wails binary"
 
 inputs:
+  build:
+    description: "Platform to build for"
+    required: false
+    default: "true"
+  sign:
+    description: "Sign the build"
+    required: false
+    default: "false"
+  package:
+    description: "Uploads workflow & uploads tag builds to a release"
+    required: false
+    default: "true"
   build-name:
     description: "The name of the binary file"
     required: true
@@ -129,38 +141,40 @@ runs:
       run: ${{inputs.deno-build}}
     # install wails
     - name: Install Wails
+      if: inputs.build == "true"
       run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
       shell: bash
     - name: Install Linux Wails deps
-      if: runner.os == 'Linux'
+      if: inputs.build == "true" && runner.os == 'Linux'
       run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-dev
       shell: bash
     - name: Install macOS Wails deps
-      if: runner.os == 'macOS'
+      if: inputs.sign == "true" && runner.os == 'macOS'
       run: brew install mitchellh/gon/gon
       shell: bash
     # Building step
     - name: Build App
+      if: inputs.build == "true"
       run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}}
       shell: bash
     - name: Add macOS perms
-      if:  runner.os == 'macOS'
+      if: inputs.build == "true" && runner.os == 'macOS'
       run: chmod +x build/bin/*/Contents/MacOS/*
       shell: bash
     - name: Add Linux perms
-      if: runner.os  == 'Linux'
+      if: inputs.build == "true" && runner.os  == 'Linux'
       run: chmod +x build/bin/*
       shell: bash
     # Package and Sign MacOS
     - name: Import Code-Signing Certificates for macOS
-      if: runner.os == 'macOS' && inputs.sign-macos-app-cert != '' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
       uses: Apple-Actions/import-codesign-certs@v1
       with:
         keychain-password: ${{ inputs.sign-macos-apple-password }}
         p12-file-base64: ${{ inputs.sign-macos-app-cert }}
         p12-password: ${{ inputs.sign-macos-app-cert-password }}
     - name: Import Code-Signing Certificates for macOS Installer
-      if: startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
       uses: Apple-Actions/import-codesign-certs@v1
       with:
         keychain-password: ${{ inputs.sign-macos-apple-password }}
@@ -168,7 +182,7 @@ runs:
         p12-password: ${{ inputs.sign-macos-app-installer-password }}
         create-keychain: false
     - name: Sign our macOS binary
-      if: runner.os == 'macOS' && inputs.sign-macos-app-cert != '' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
       shell: bash
       env:
         APPLE_PASSWORD: ${{ inputs.sign-macos-apple-password }}
@@ -176,17 +190,33 @@ runs:
         echo "Signing Package"
         gon -log-level=info ./build/darwin/gon-sign.json
     - name: Build .app zip file
-      if: runner.os == 'macOS' && inputs.sign-macos-app-cert != '' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
       shell: bash
       run: |
         ditto -c -k --keepParent ./build/bin/${{inputs.build-name}}.app ./build/bin/${{inputs.build-name}}.app.zip
     - name: Building Installer
-      if: runner.os == 'macOS' && inputs.sign-macos-app-cert != '' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
       shell: bash
       run: |
         productbuild --sign '${{inputs.sign-macos-installer-id}}' --component ./build/bin/${{inputs.build-name}}.app ./build/bin/${{inputs.build-name}}.pkg
     - name: Notarising Installer and zip
-      if: runner.os == 'macOS' && inputs.sign-macos-app-cert != '' && startsWith(github.ref, 'refs/tags/')
+      if: runner.os == 'macOS' && inputs.sign == 'true' && startsWith(github.ref, 'refs/tags/')
       shell: bash
       run: |
         gon -log-level=info ./build/darwin/gon-notarize.json      
+
+    # Upload build assets
+    - uses: actions/upload-artifact@v2
+      if: inputs.package == "true"
+      with:
+        name: Wails ${{ runner.os }} Build
+        path: |
+          build/bin/
+          build\bin\
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: inputs.package == "true" && startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          build/bin/*
+          build\bin\*
