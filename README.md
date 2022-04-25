@@ -78,7 +78,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - uses: letheanVPN/wails-build-action@v1
+      - uses: letheanVPN/wails-build-action@v2
         with:
           build-name: wailsApp
           build-platform: linux/amd64
@@ -88,7 +88,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - uses: letheanVPN/wails-build-action@v1
+      - uses: letheanVPN/wails-build-action@v2
         with:
           build-name: wailsApp
           build-platform: windows/amd64
@@ -98,7 +98,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - uses: letheanVPN/wails-build-action@v1
+      - uses: letheanVPN/wails-build-action@v2
         with:
           build-name: wailsApp
           build-platform: darwin/universal
