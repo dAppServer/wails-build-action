@@ -220,7 +220,7 @@ runs:
     # Windows signing
     - name: Sign Windows binaries
       shell: powershell
-      if: runner.os == 'Windows'
+      if: runner.os == 'Windows' && inputs.sign != 'false' && inputs.sign-windows-cert != ''
       run: |
         echo "Creating certificate file"
         New-Item -ItemType directory -Path certificate
