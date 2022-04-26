@@ -6,7 +6,7 @@ By default, the action will build and upload the results to github, on a tagged 
 
 # Default build
 ```yaml
-- uses: letheanVPN/wails-build-action@v1
+- uses: letheanVPN/wails-build-action@v2
   with:
     build-name: wailsApp
     build-platform: linux/amd64
@@ -15,7 +15,7 @@ By default, the action will build and upload the results to github, on a tagged 
 ## Build with No uploading
 
 ```yaml
-- uses: letheanVPN/wails-build-action@v1
+- uses: letheanVPN/wails-build-action@v2
   with:
     build-name: wailsApp
     build-platform: linux/amd64
@@ -47,10 +47,42 @@ By default, the action will build and upload the results to github, on a tagged 
 | `sign-windows-cert`                  | ''                   | Windows Signing Certificate                        |
 | `sign-windows-cert-passowrd`         | ''                   | Windows Signing Certificate Password               |
 
-## Example with Code signing
+
+
+## Example Build
 
 ```yaml
-  - uses: letheanVPN/wails-build-action@v1
+name: Wails build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        build: [
+          {name: wailsTest, platform: linux/amd64, os: ubuntu-latest},
+          {name: wailsTest, platform: windows/amd64, os: windows-latest},
+          {name: wailsTest, platform: darwin/universal, os: macos-latest}
+        ]
+    runs-on: ${{ matrix.build.os }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - uses: letheanVPN/wails-build-action@v2
+        with:
+          build-name: ${{ matrix.build.name }}
+          build-platform: ${{ matrix.build.platform }}
+```
+
+## MacOS Code Signing
+
+You need to make two gon configuration files, this is because we need to sign and notarize the .app before making an installer with it.
+
+```yaml
+  - uses: letheanVPN/wails-build-action@v2
     with:
       build-name: wailsApp
       sign: true
@@ -64,42 +96,57 @@ By default, the action will build and upload the results to github, on a tagged 
       sign-macos-installer-cert-password: ${{ secrets.MACOS_INSTALLER_CERT_PASSWORD }}
 ```
 
-## Example Build
-
-```yaml
-name: Wails build
-
-on: [push, pull_request]
- 
-jobs:
-  linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - uses: letheanVPN/wails-build-action@v2
-        with:
-          build-name: wailsApp
-          build-platform: linux/amd64
-  windows:
-    runs-on: windows-2022
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - uses: letheanVPN/wails-build-action@v2
-        with:
-          build-name: wailsApp
-          build-platform: windows/amd64
-  macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          submodules: recursive
-      - uses: letheanVPN/wails-build-action@v2
-        with:
-          build-name: wailsApp
-          build-platform: darwin/universal
+`build/darwin/gon-sign.json`
+```json
+{
+  "source" : ["./build/bin/wailsApp.app"],
+  "bundle_id" : "com.wails.app",
+  "apple_id": {
+    "username": "username",
+    "password": "@env:APPLE_PASSWORD"
+  },
+  "sign" :{
+    "application_identity" : "Developer ID Application: XXXXXXXX (XXXXXX)",
+    "entitlements_file": "./build/darwin/entitlements.plist"
+  },
+  "dmg" :{
+    "output_path":  "./build/bin/wailsApp.dmg",
+    "volume_name":  "Lethean"
+  }
+}
+```
+`build/darwin/gon-notarize.json`
+```json
+{
+  "notarize": [{
+    "path": "./build/bin/wailsApp.pkg",
+    "bundle_id": "com.wails.app",
+    "staple": true
+  },{
+    "path": "./build/bin/wailsApp.app.zip",
+    "bundle_id": "com.wails.app",
+    "staple": false
+  }],
+  "apple_id": {
+    "username": "USER name",
+    "password": "@env:APPLE_PASSWORD"
+  }
+}
+```
+`build/darwin/entitlements.plist`
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>com.apple.security.app-sandbox</key>
+  <true/>
+  <key>com.apple.security.network.client</key>
+  <true/>
+  <key>com.apple.security.network.server</key>
+  <true/>
+  <key>com.apple.security.files.user-selected.read-write</key>
+  <true/>
+</dict>
+</plist>
 ```
