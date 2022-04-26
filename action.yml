@@ -154,7 +154,9 @@ runs:
       shell: bash
     - name: Install Linux Wails deps
       if: inputs.build == 'true' && runner.os == 'Linux'
-      run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-dev
+      run: |
+        sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
+        export CC=aarch64-linux-gnu-gcc
       shell: bash
     - name: Install macOS Wails deps
       if: inputs.sign == 'true' && runner.os == 'macOS'
