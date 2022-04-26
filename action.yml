@@ -167,8 +167,6 @@ runs:
       shell: bash
     - name: Build App
       if: inputs.build == 'true' &&  runner.os == 'Linux'
-      env:
-        CC: aarch64-linux-gnu-gcc
       run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}}
       shell: bash
     - name: Build App
@@ -243,7 +241,7 @@ runs:
     - uses: actions/upload-artifact@v2
       if: inputs.package == 'true'
       with:
-        name: "Wails Build: ${{inputs.build-platform}}"
+        name: Wails Build ${{inputs.build-platform}}
         path: |
           build/bin/
           build\bin\*
