@@ -25,9 +25,9 @@ By default, the action will build and upload the results to github, on a tagged 
 
 | Name                                 | Default              | Description                                        |
 |--------------------------------------|----------------------|----------------------------------------------------|
-| `build`                              | `true`               | The name of the binary                             |
-| `sign`                               | `false`              | The name of the binary                             |
-| `package`                            | `true`               | The name of the binary                             |
+| `build`                              | `true`               | Runs `wails build` on your source                  |
+| `sign`                               | `false`              | After build, signs and creates signed installers   |
+| `package`                            | `true`               | Upload workflow artifacts & publish release on tag |
 | `build-name`                         | none, required input | The name of the binary                             |
 | `build-platform`                     | `darwin/universal`   | Platform to build for                              |
 | `wails-version`                      | `latest`             | Wails version to use                               |
