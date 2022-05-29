@@ -172,6 +172,7 @@ runs:
     - name: Sign our macOS binary
       if: runner.os == 'macOS' && inputs.sign != 'false' && startsWith(github.ref, 'refs/tags/')
       shell: bash
+      working-directory: ${{ inputs.app-working-directory }}
       env:
         APPLE_PASSWORD: ${{ inputs.sign-macos-apple-password }}
       run: |
@@ -179,22 +180,26 @@ runs:
         gon -log-level=info ./build/darwin/gon-sign.json
     - name: Build .app zip file
       if: runner.os == 'macOS'
+      working-directory: ${{ inputs.app-working-directory }}
       shell: bash
       run: |
         ditto -c -k --keepParent ./build/bin/${{inputs.build-name}}.app ./build/bin/${{inputs.build-name}}.app.zip
     - name: Building Installer
       if: runner.os == 'macOS' && inputs.sign != 'false' && inputs.sign-macos-installer-id != '' && startsWith(github.ref, 'refs/tags/')
       shell: bash
+      working-directory: ${{ inputs.app-working-directory }}
       run: |
         productbuild --sign '${{inputs.sign-macos-installer-id}}' --component ./build/bin/${{inputs.build-name}}.app ./build/bin/${{inputs.build-name}}.pkg
     - name: Building Installer
       if: runner.os == 'macOS' && inputs.sign-macos-installer-id == '' && startsWith(github.ref, 'refs/tags/')
       shell: bash
+      working-directory: ${{ inputs.app-working-directory }}
       run: |
         productbuild --component ./build/bin/${{inputs.build-name}}.app ./build/bin/${{inputs.build-name}}.pkg
     - name: Notarising Installer and zip
       if: runner.os == 'macOS' && inputs.sign != 'false' && startsWith(github.ref, 'refs/tags/')
       shell: bash
+      working-directory: ${{ inputs.app-working-directory }}
       env:
         APPLE_PASSWORD: ${{ inputs.sign-macos-apple-password }}
       run: |
@@ -203,6 +208,7 @@ runs:
     - name: Sign Windows binaries
       shell: powershell
       if: runner.os == 'Windows' && inputs.sign != 'false' && inputs.sign-windows-cert != ''
+      working-directory: ${{ inputs.app-working-directory }}
       run: |
         echo "Creating certificate file"
         New-Item -ItemType directory -Path certificate
@@ -218,11 +224,11 @@ runs:
       with:
         name: Wails Build ${{runner.os}} ${{inputs.build-name}}
         path: |
-          build/bin/
-          build\bin\*
+          */bin/
+          *\bin\*
     - name: Release
       uses: softprops/action-gh-release@v1
       if: inputs.package == 'true' && startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          build/bin/*
+          */bin/*
