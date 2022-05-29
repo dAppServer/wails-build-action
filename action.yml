@@ -179,7 +179,7 @@ runs:
         echo "Signing Package"
         gon -log-level=info ./build/darwin/gon-sign.json
     - name: Build .app zip file
-      if: runner.os == 'macOS'
+      if: runner.os == 'macOS' && inputs.sign != 'false'
       working-directory: ${{ inputs.app-working-directory }}
       shell: bash
       run: |
