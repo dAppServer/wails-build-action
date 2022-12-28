@@ -32,7 +32,7 @@ inputs:
   go-version:
     description: "Version of Go to use"
     required: false
-    default: "stable"
+    default: "1.18"
   node-version:
     description: "Node js version"
     required: false
