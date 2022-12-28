@@ -95,7 +95,7 @@ runs:
   steps:
     # Setup and configure GoLang
     - name: Setup GoLang
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ${{inputs.go-version}}
     # Setup and configure NodeJS
