@@ -32,7 +32,7 @@ By default, the action will build and upload the results to github, on a tagged 
 | `build-platform`                     | `darwin/universal`   | Platform to build for                              |
 | `wails-version`                      | `latest`             | Wails version to use                               |
 | `wails-build-webview2`               | `download`           | Webview2 installing [download,embed,browser,error] |
-| `go-version`                         | `1.17`               | Version of Go to use                               |
+| `go-version`                         | `1.18`               | Version of Go to use                               |
 | `node-version`                       | `16.x`               | Node js version                                    |
 | `deno-build`                         | ``                   | Deno compile command                               |
 | `deno-working-directory`             | `.`                  | Working directory of your [Deno](https://deno.land/) server|
