@@ -32,7 +32,7 @@ inputs:
   go-version:
     description: "Version of Go to use"
     required: false
-    default: "1.18"
+    default: "^1.18"
   node-version:
     description: "Node js version"
     required: false
@@ -97,6 +97,9 @@ runs:
     - name: Setup GoLang
       uses: actions/setup-go@v3
       with:
+        check-latest: true
+        cache: true
+        cache-dependency-path: subdir/go.sum
         go-version: ${{inputs.go-version}}
     # Setup and configure NodeJS
     - name: Setup NodeJS
