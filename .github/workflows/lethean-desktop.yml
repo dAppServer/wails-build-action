@@ -27,7 +27,6 @@ jobs:
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - run: make setup
       - uses: dAppServer/wails-build-action@v2
         with:
           build-name: lethean
@@ -44,7 +43,6 @@ jobs:
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - run: make setup
       - uses: dAppServer/wails-build-action@v2
         with:
           build-name: lethean
@@ -71,7 +69,6 @@ jobs:
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - run: make setup
       - uses: dAppServer/wails-build-action@v2
         with:
           build-name: lethean.exe
