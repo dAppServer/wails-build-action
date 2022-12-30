@@ -101,6 +101,8 @@ runs:
         cache: true
         cache-dependency-path: subdir/go.sum
         go-version: ${{inputs.go-version}}
+    - run: go version
+      shell: bash
     # Setup and configure NodeJS
     - name: Setup NodeJS
       uses: actions/setup-node@v2
