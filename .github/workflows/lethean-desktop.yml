@@ -54,6 +54,24 @@ jobs:
           deno-working-directory: "server"
           wails-build-webview2: "embed"
           wails-version: v2.3.1
+  macos-diff-name:
+    runs-on: macos-latest
+    steps:
+      # Checkout code
+      - uses: actions/checkout@v2
+        with:
+          repository: 'letheanVPN/desktop'
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@v2
+        with:
+          build-name: letheanTest
+          build-platform: darwin/universal
+          deno-build: "npm run server:build:macos-intel"
+          deno-working-directory: "server"
+          wails-build-webview2: "embed"
+          wails-version: "v2.3.1"
+          go-version: ^1.18
+          sign: "false"
   macos-nosign:
     runs-on: macos-latest
     steps:
@@ -97,6 +115,23 @@ jobs:
           sign-macos-installer-id: "Developer ID Installer: Lethean LTD (W2DNA5L5DY)"
           sign-macos-installer-cert: ${{ secrets.MAC_DEVELOPER_INSTALL_CERT }}
           sign-macos-installer-cert-password: ${{ secrets.MAC_DEVELOPER_INSTALL_PASS }}
+  windows-diff-name:
+    runs-on: windows-2022
+    steps:
+      # Checkout code
+      - uses: actions/checkout@v2
+        with:
+          repository: 'letheanVPN/desktop'
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@v2
+        with:
+          build-name: lethean.exe
+          build-platform: windows/amd64
+          deno-build: "npm run server:build:windows"
+          deno-working-directory: "server"
+          wails-build-webview2: "embed"
+          wails-version: v2.3.1
+          go-version: ^1.18
   windows:
     runs-on: windows-2022
     steps:
