@@ -35,6 +35,25 @@ jobs:
           deno-working-directory: "server"
           wails-build-webview2: "embed"
           wails-version: v2.3.1
+  linux-diff-name:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          repository: 'letheanVPN/desktop'
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@v2
+        with:
+          build-name: letheanTest
+          build-platform: linux/amd64
+          deno-build: "npm run server:build:linux"
+          deno-working-directory: "server"
+          wails-build-webview2: "embed"
+          wails-version: v2.3.1
   macos-nosign:
     runs-on: macos-latest
     steps:
