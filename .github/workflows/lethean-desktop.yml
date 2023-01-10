@@ -23,11 +23,15 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: ./action.yml
+      - uses: actions/checkout@v3
+        with:
+          path: 'gha'
+          submodules: recursive
+      - uses: ./gha/action.yml
         with:
           build-name: lethean
           build-platform: linux/amd64
@@ -42,11 +46,15 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: ./action.yml
+      - uses: actions/checkout@v3
+        with:
+          path: 'gha'
+          submodules: recursive
+      - uses: ./gha/action.yml
         with:
           build-name: letheanTest
           build-platform: linux/amd64
@@ -58,11 +66,15 @@ jobs:
     runs-on: macos-latest
     steps:
       # Checkout code
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: ./action.yml
+      - uses: actions/checkout@v3
+        with:
+          path: 'gha'
+          submodules: recursive
+      - uses: ./gha/action.yml
         with:
           build-name: letheanTest
           build-platform: darwin/universal
@@ -76,11 +88,15 @@ jobs:
     runs-on: macos-latest
     steps:
       # Checkout code
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: ./action.yml
+      - uses: actions/checkout@v3
+        with:
+          path: 'gha'
+          submodules: recursive
+      - uses: ./gha/action.yml
         with:
           build-name: lethean
           build-platform: darwin/universal
@@ -94,11 +110,15 @@ jobs:
     runs-on: macos-latest
     steps:
       # Checkout code
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: ./action.yml
+      - uses: actions/checkout@v3
+        with:
+          path: 'gha'
+          submodules: recursive
+      - uses: ./gha/action.yml
         with:
           build-name: lethean
           build-platform: darwin/universal
@@ -119,11 +139,15 @@ jobs:
     runs-on: windows-2022
     steps:
       # Checkout code
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: ./action.yml
+      - uses: actions/checkout@v3
+        with:
+          path: 'gha'
+          submodules: recursive
+      - uses: ./gha/action.yml
         with:
           build-name: lethean.exe
           build-platform: windows/amd64
@@ -136,11 +160,15 @@ jobs:
     runs-on: windows-2022
     steps:
       # Checkout code
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: ./action.yml
+      - uses: actions/checkout@v3
+        with:
+          path: 'gha'
+          submodules: recursive
+      - uses: ./gha/action.yml
         with:
           build-name: lethean.exe
           build-platform: windows/amd64
