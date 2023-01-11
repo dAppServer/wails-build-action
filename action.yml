@@ -104,7 +104,7 @@ runs:
       shell: bash
     # Setup and configure NodeJS
     - name: Setup NodeJS
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{inputs.node-version}}
     # (Optional) Setup and configure Deno
