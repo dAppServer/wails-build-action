@@ -31,7 +31,7 @@ jobs:
         with:
           path: 'gha'
           submodules: recursive
-      - uses: ${{gha.workspace}}/gha/action.yml
+      - uses: ./gha/
         with:
           build-name: lethean
           build-platform: linux/amd64
@@ -54,7 +54,7 @@ jobs:
         with:
           path: 'gha'
           submodules: recursive
-      - uses: ${{ github.workspace }}/gha/action.yml
+      - uses: ./gha/
         with:
           build-name: letheanTest
           build-platform: linux/amd64
@@ -74,7 +74,7 @@ jobs:
         with:
           path: 'gha'
           submodules: recursive
-      - uses: ${{ github.workspace }}/gha/action.yml
+      - uses: ./gha/
         with:
           build-name: letheanTest
           build-platform: darwin/universal
@@ -96,7 +96,7 @@ jobs:
         with:
           path: 'gha'
           submodules: recursive
-      - uses: ${{ github.workspace }}/gha/action.yml
+      - uses: ./gha/
         with:
           build-name: lethean
           build-platform: darwin/universal
@@ -118,7 +118,7 @@ jobs:
         with:
           path: 'gha'
           submodules: recursive
-      - uses: ${{ github.workspace }}/gha/action.yml
+      - uses: ./gha/
         with:
           build-name: lethean
           build-platform: darwin/universal
@@ -147,7 +147,7 @@ jobs:
         with:
           path: 'gha'
           submodules: recursive
-      - uses: ${{ github.workspace }}\gha\action.yml
+      - uses: ./gha/
         with:
           build-name: lethean.exe
           build-platform: windows/amd64
@@ -168,7 +168,7 @@ jobs:
         with:
           path: 'gha'
           submodules: recursive
-      - uses: ${{ github.workspace }}\gha\action.yml
+      - uses: ./gha/
         with:
           build-name: lethean.exe
           build-platform: windows/amd64
