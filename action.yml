@@ -220,7 +220,7 @@ runs:
       working-directory: ${{ inputs.app-working-directory }}
       shell: bash
       run: |
-        rm ./build/bin/${{inputs.build-name}}.app
+        rm -rf ./build/bin/${{inputs.build-name}}.app
     # Windows signing
     - name: Sign Windows binaries
       shell: powershell
