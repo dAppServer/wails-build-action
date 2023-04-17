@@ -78,3 +78,22 @@ jobs:
           wails-build-webview2: "embed"
           wails-version: v2.3.1
           go-version: ^1.18
+          nsis: 'false'
+  windows-nsis:
+    runs-on: windows-2022
+    steps:
+      # Checkout code
+      - uses: actions/checkout@v2
+        with:
+          repository: 'letheanVPN/desktop'
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@v2
+        with:
+          build-name: lethean.exe
+          build-platform: windows/amd64
+          deno-build: "npm run server:build:windows"
+          deno-working-directory: "server"
+          wails-build-webview2: "embed"
+          wails-version: v2.3.1
+          go-version: ^1.18
+          nsis: "true"
