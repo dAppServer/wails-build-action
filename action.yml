@@ -14,6 +14,10 @@ inputs:
     description: "Uploads workflow & uploads tag builds to a release"
     required: false
     default: "true"
+  nsis:
+    description: "Build a Windows Installer"
+    required: false
+    default: "true"
   build-name:
     description: "The name of the binary file"
     required: true
@@ -142,8 +146,13 @@ runs:
       working-directory: ${{ inputs.app-working-directory }}
       run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}}
       shell: bash
-    - name: Build App
-      if: inputs.build == 'true' && runner.os == 'Windows'
+    - name: Build Windows App
+      if: inputs.build == 'true' && runner.os == 'Windows' && inputs.nsis == 'false'
+      working-directory: ${{ inputs.app-working-directory }}
+      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}}
+      shell: bash
+    - name: Build Windows App + Installer
+      if: inputs.build == 'true' && runner.os == 'Windows' && inputs.nsis == 'true'
       working-directory: ${{ inputs.app-working-directory }}
       run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -nsis -o ${{inputs.build-name}}
       shell: bash
