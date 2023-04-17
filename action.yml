@@ -1,6 +1,8 @@
 name: "Wails Build Action"
 description: "Creates a wails binary"
-
+branding:
+  icon: 'box'
+  color: 'purple'
 inputs:
   build:
     description: "Platform to build for"
