@@ -27,6 +27,7 @@ By default, the action will build and upload the results to github, on a tagged 
 |--------------------------------------|----------------------|----------------------------------------------------|
 | `build-name`                         | none, required input | The name of the binary                             |
 | `build`                              | `true`               | Runs `wails build` on your source                  |
+| `nsis`                               | `true`               | Runs `wails build` with ot without -nsis           |
 | `sign`                               | `false`              | After build, signs and creates signed installers   |
 | `package`                            | `true`               | Upload workflow artifacts & publish release on tag |
 | `build-platform`                     | `darwin/universal`   | Platform to build for                              |
