@@ -27,7 +27,7 @@ jobs:
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: dAppServer/wails-build-action@v2
+      - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean
           build-platform: linux/amd64
@@ -41,7 +41,7 @@ jobs:
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: dAppServer/wails-build-action@v2
+      - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean
           build-platform: darwin/universal
@@ -64,7 +64,7 @@ jobs:
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: dAppServer/wails-build-action@v2
+      - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean.exe
           build-platform: windows/amd64
@@ -80,7 +80,7 @@ jobs:
         with:
           repository: 'letheanVPN/desktop'
           submodules: recursive
-      - uses: dAppServer/wails-build-action@v2
+      - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean.exe
           build-platform: windows/amd64
