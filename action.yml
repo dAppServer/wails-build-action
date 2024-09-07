@@ -197,7 +197,9 @@ runs:
       working-directory: ${{ inputs.app-working-directory }}
       shell: bash
       run: |
-        ditto -c -k ${{ inputs.app-working-directory }}/build/bin/${{inputs.build-name}}.app ${{ inputs.app-working-directory }}/build/bin/${{inputs.build-name}}.app.zip
+        cp -r ${{ inputs.app-working-directory }}/build/bin/${{inputs.build-name}}.app ${{ inputs.app-working-directory }}/build/bin/dist/${{inputs.build-name}}.app
+        ditto -c -k ${{ inputs.app-working-directory }}/build/bin/dist ${{ inputs.app-working-directory }}/build/bin/${{inputs.build-name}}.app.zip
+        rm -rf ${{ inputs.app-working-directory }}/build/bin/dist
     - name: Building Installer
       if: runner.os == 'macOS' && inputs.sign != 'false' && inputs.sign-macos-installer-id != '' && startsWith(github.ref, 'refs/tags/')
       shell: bash
