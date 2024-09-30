@@ -31,11 +31,12 @@ By default, the action will build and upload the results to github, on a tagged 
 | `sign`                               | `false`              | After build, signs and creates signed installers   |
 | `package`                            | `true`               | Upload workflow artifacts & publish release on tag |
 | `build-platform`                     | `darwin/universal`   | Platform to build for                              |
+| `build-tags`                         | ''                   | Build tags to pass to Go compiler. Must be quoted. |
 | `wails-version`                      | `latest`             | Wails version to use                               |
 | `wails-build-webview2`               | `download`           | Webview2 installing [download,embed,browser,error] |
 | `go-version`                         | `1.18`               | Version of Go to use                               |
 | `node-version`                       | `16.x`               | Node js version                                    |
-| `deno-build`                         | ``                   | Deno compile command                               |
+| `deno-build`                         | ''                   | Deno compile command                               |
 | `deno-working-directory`             | `.`                  | Working directory of your [Deno](https://deno.land/) server|
 | `deno-version`                       | `v1.20.x`            | Deno version to use                                |
 | `sign-macos-app-id`                  | ''                   | ID of the app signing cert                         |
