@@ -95,10 +95,26 @@ inputs:
     description: "Windows Signing Certificate Password"
     required: false
     default: ''
-  macos-build-name:
+  macos-build-name: # fix macos wails build not use -o option #11
     description: "Wails build your App name on Mac"
     required: false
     default: 'App'
+  no-node: # project needn't nodejs
+    description: "Not use node"
+    required: false
+    default: "false"
+  no-deno:    
+    description: "Not use deno"
+    required: false
+    default: "false"
+  no-bun:    
+    description: "Not use bun"
+    required: false
+    default: "true"
+  nbuntu24:
+    description: "solve libwebkit2gtk-4.0-dev problem"
+    required: false
+    default: "" # -tags webkit2_41
 
 runs:
   using: "composite"
@@ -112,28 +128,41 @@ runs:
     - run: go version
       shell: bash
     # Setup and configure NodeJS
-    # - name: Setup NodeJS
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version: ${{inputs.node-version}}
+    - name: Setup NodeJS
+      if: no-node == "false"
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{inputs.node-version}}
     # (Optional) Setup and configure Deno
-    # - name: Setup Deno
-    #   uses: denoland/setup-deno@v1
-    #   if: inputs.deno-build != ''
-    #   with:
-    #     deno-version: ${{inputs.deno-version}}
-    # - name: Run Deno Command
-    #   if: inputs.deno-build != ''
-    #   shell: bash
-    #   working-directory: ${{inputs.deno-working-directory}}
-    #   run: ${{inputs.deno-build}}
+    - name: Setup Deno
+      if: no-deno == "false"
+      uses: denoland/setup-deno@v1
+      if: inputs.deno-build != ''
+      with:
+        deno-version: ${{inputs.deno-version}}
+    - name: Run Deno Command
+      if: no-deno == "false" && inputs.deno-build != ''
+      shell: bash
+      working-directory: ${{inputs.deno-working-directory}}
+      run: ${{inputs.deno-build}}
+    # Setup Bun
+    - name: Setup Bun
+        if: no-bun == "false"
+        uses: oven-sh/setup-bun@v1 # Use the official setup-bun action
+        with:
+          bun-version: latest # Or a specific version like '1.0.0'
     # install wails
     - name: Install Wails
       if: inputs.build == 'true'
       run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
       shell: bash
     - name: Install Linux Wails deps
-      if: inputs.build == 'true' && runner.os == 'Linux'
+      if: inputs.build == 'true' && runner.os == 'Linux' && ubuntu24 == ""
+      run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
+      shell: bash
+    # build on ubuntu 24
+    - name: Install Linux 24 Wails deps
+      if: inputs.build == 'true' && runner.os == 'Linux' && ubuntu24 != ""
       run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
       shell: bash
     - name: Install macOS Wails deps
@@ -150,7 +179,7 @@ runs:
     - name: Build App
       if: inputs.build == 'true' &&  runner.os == 'Linux'
       working-directory: ${{ inputs.app-working-directory }}
-      run: wails build -tags webkit2_41 --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}}
+      run: wails build $${{inputs.ubuntu24}} --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}}
       shell: bash
     - name: Build Windows App
       if: inputs.build == 'true' && runner.os == 'Windows' && inputs.nsis == 'false'
@@ -202,7 +231,6 @@ runs:
       working-directory: ${{ inputs.app-working-directory }}
       shell: bash
       run: |
-        #zip -r ${{ inputs.app-working-directory }}/build/bin/${{inputs.build-name}}.app.zip ${{ inputs.app-working-directory }}/build/bin/*
         ditto -c -k ${{ inputs.app-working-directory }}/build/bin/${{inputs.macos-build-name}}.app ${{ inputs.app-working-directory }}/build/bin/${{inputs.macos-build-name}}.app.zip
     - name: Building Installer
       if: runner.os == 'macOS' && inputs.sign != 'false' && inputs.sign-macos-installer-id != '' && startsWith(github.ref, 'refs/tags/')
