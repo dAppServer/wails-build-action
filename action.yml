@@ -129,28 +129,27 @@ runs:
       shell: bash
     # Setup and configure NodeJS
     - name: Setup NodeJS
-      if: no-node == "false"
+      if: inputs.no-node == "false"
       uses: actions/setup-node@v3
       with:
         node-version: ${{inputs.node-version}}
     # (Optional) Setup and configure Deno
     - name: Setup Deno
-      if: no-deno == "false"
+      if: inputs.no-deno == "false" && inputs.deno-build != ''
       uses: denoland/setup-deno@v1
-      if: inputs.deno-build != ''
       with:
         deno-version: ${{inputs.deno-version}}
     - name: Run Deno Command
-      if: no-deno == "false" && inputs.deno-build != ''
+      if: inputs.no-deno == "false" && inputs.deno-build != ''
       shell: bash
       working-directory: ${{inputs.deno-working-directory}}
       run: ${{inputs.deno-build}}
     # Setup Bun
     - name: Setup Bun
-        if: no-bun == "false"
-        uses: oven-sh/setup-bun@v1 # Use the official setup-bun action
-        with:
-          bun-version: latest # Or a specific version like '1.0.0'
+      if: no-bun == "false"
+      uses: oven-sh/setup-bun@v1 # Use the official setup-bun action 
+      with:
+        bun-version: latest # Or a specific version like '1.0.0'
     # install wails
     - name: Install Wails
       if: inputs.build == 'true'
