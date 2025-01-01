@@ -102,19 +102,19 @@ inputs:
   no-node: # project needn't nodejs
     description: "Not use node"
     required: false
-    default: "false"
+    default: 'false'
   no-deno:    
     description: "Not use deno"
     required: false
-    default: "false"
+    default: 'false'
   no-bun:    
     description: "Not use bun"
     required: false
-    default: "true"
+    default: 'true'
   nbuntu24:
     description: "solve libwebkit2gtk-4.0-dev problem"
     required: false
-    default: "" # -tags webkit2_41
+    default: '' # -tags webkit2_41
 
 runs:
   using: "composite"
@@ -129,24 +129,24 @@ runs:
       shell: bash
     # Setup and configure NodeJS
     - name: Setup NodeJS
-      if: inputs.no-node == "false"
+      if: inputs.no-node == 'false'
       uses: actions/setup-node@v3
       with:
         node-version: ${{inputs.node-version}}
     # (Optional) Setup and configure Deno
     - name: Setup Deno
-      if: inputs.no-deno == "false" && inputs.deno-build != ''
+      if: inputs.no-deno == 'false' && inputs.deno-build != ''
       uses: denoland/setup-deno@v1
       with:
         deno-version: ${{inputs.deno-version}}
     - name: Run Deno Command
-      if: inputs.no-deno == "false" && inputs.deno-build != ''
+      if: inputs.no-deno == 'false' && inputs.deno-build != ''
       shell: bash
       working-directory: ${{inputs.deno-working-directory}}
       run: ${{inputs.deno-build}}
     # Setup Bun
     - name: Setup Bun
-      if: no-bun == "false"
+      if: inputs.no-bun == 'false'
       uses: oven-sh/setup-bun@v1 # Use the official setup-bun action 
       with:
         bun-version: latest # Or a specific version like '1.0.0'
@@ -156,12 +156,12 @@ runs:
       run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
       shell: bash
     - name: Install Linux Wails deps
-      if: inputs.build == 'true' && runner.os == 'Linux' && ubuntu24 == ""
+      if: inputs.build == 'true' && runner.os == 'Linux' && inputs.ubuntu24 == ''
       run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
       shell: bash
     # build on ubuntu 24
     - name: Install Linux 24 Wails deps
-      if: inputs.build == 'true' && runner.os == 'Linux' && ubuntu24 != ""
+      if: inputs.build == 'true' && runner.os == 'Linux' && inputs.ubuntu24 != ''
       run: sudo apt-get update && sudo apt-get install libgtk-3-0 libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
       shell: bash
     - name: Install macOS Wails deps
