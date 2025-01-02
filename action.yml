@@ -102,16 +102,16 @@ inputs:
   no-node: # project needn't nodejs
     description: "Not use node"
     required: false
-    default: 'false'
+    default: "false"
   no-deno:    
     description: "Not use deno"
     required: false
-    default: 'false'
+    default: "false"
   no-bun:    
     description: "Not use bun"
     required: false
-    default: 'true'
-  nbuntu24:
+    default: "ture"
+  ubuntu24:
     description: "solve libwebkit2gtk-4.0-dev problem"
     required: false
     default: '' # -tags webkit2_41
