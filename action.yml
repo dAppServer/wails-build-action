@@ -150,10 +150,10 @@ runs:
         echo "BUILD_OPTIONS=$build_options" >> "$GITHUB_OUTPUT"
     # Setup and configure GoLang
     - name: Setup GoLang
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         check-latest: true
-        go-version: ${{inputs.go-version}}
+        go-version-file: 'go.mod'
     - name: Install Garble
       if: inputs.build-obfuscate == 'true'
       run: go install mvdan.cc/garble@latest
