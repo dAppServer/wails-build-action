@@ -154,7 +154,6 @@ runs:
         if ${{ inputs.nsis == true }}; then
           build_options+=' -nsis'
         fi
-        echo "$build_options"
         echo "BUILD_OPTIONS=$build_options" >> "$GITHUB_OUTPUT"
     # Setup and configure GoLang
     - name: Setup GoLang
