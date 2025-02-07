@@ -30,7 +30,7 @@ inputs:
   build-tags:
     description: "Build tags to pass to Go compiler. Must be quoted. Space or comma (but not both) separated"
     required: false
-    default: ""
+    default: "false"
   build-obfuscate:
     description: "Obfuscate the build"
     required: false
@@ -142,31 +142,51 @@ runs:
       shell: bash
     - name: Install Linux Wails deps
       if: inputs.build == 'true' && runner.os == 'Linux'
-      run: sudo apt-get update && sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
+      id: linux_lsb_release
+      run: |
+        DISTRO=$(lsb_release -rs) # Get the distribution version (e.g., "22.04", "24.04")
+        if [[ "$DISTRO" == "20.04" ]]; then
+          sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
+        elif [[ "$DISTRO" == "22.04" ]]; then
+          sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
+        elif [[ "$DISTRO" == "24.04" ]]; then
+          sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
+        else
+          echo "Unsupported Linux distribution: $DISTRO"
+          exit 1 # Fail the workflow if the distribution is not supported
+        fi
+        echo "::set-output name=linux_lsb_release::$DISTRO"
       shell: bash
     - name: Install macOS Wails deps
       if: runner.os == 'macOS'
       run: brew install mitchellh/gon/gon
       shell: bash
     # Building step
-    - name: Set build Options
+    - name: Setup Build Options
       id: build_options
       shell: bash
       run: |
-          build_options="${{ inputs.build-tags }}"
-          if [[ "${{ inputs.build-obfuscate }}" == 'true' ]]; then
-            build_options+=' -obfuscated'
-          fi
-          if [[ "${{ inputs.build-obfuscate-args }}" != '' ]]; then
-            build_options+=' -garbleargs "${{ inputs.build-obfuscate-args }}"'
-          fi
-          if [[ "${{ inputs.build-tags }}" != '' ]]; then
+        build_options=""
+        if [[ "${{ inputs.build-obfuscate }}" == 'true' ]]; then
+          build_options+=' -obfuscated'
+        fi
+        if [[ "${{ inputs.build-obfuscate-args }}" != '' ]]; then
+          build_options+=' -garbleargs "${{ inputs.build-obfuscate-args }}"'
+        fi
+        if [[ "${{ inputs.build-tags }}" != "false" ]]; then
+          if [[ "${{ steps.linux_lsb_release.outputs.DISTRO }}" == '24.04' ]]; then
+            build_options+=' -tags "${{inputs.build-tags}} webkit2_41"'
+          else
             build_options+=' -tags "${{inputs.build-tags}}"'
           fi
-          if [[ "${{ inputs.nsis }}" == 'true' ]]; then
-            build_options+=' -nsis'
-          fi
-          echo "::set-output name=build_options::$build_options"
+        fi
+        if [[ "${{ inputs.nsis }}" == 'true' ]]; then
+          build_options+=' -nsis'
+        fi
+        if [[ "${{ steps.linux_lsb_release.outputs.DISTRO }}" == '24.04' ]]; then
+          build_options+=' -nsis'
+        fi
+        echo "::set-output name=build_options::$build_options"
     - name: Build App
       if: inputs.build == 'true'
       working-directory: ${{ inputs.app-working-directory }}

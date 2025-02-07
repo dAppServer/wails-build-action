@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  ubuntu2404:
+  ubuntu2404-wtag:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +20,18 @@ jobs:
           build-name: wails
           build-platform: linux/amd64
           build-tags: webkit2_41
+          wails-build-webview2: "embed"
+          package: false # Do not try to upload to github
+  ubuntu2404-wotag:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@33-add-garble-support
+        with:
+          build-name: wails
+          build-platform: linux/amd64
           wails-build-webview2: "embed"
           package: false # Do not try to upload to github
   ubuntu2204:
