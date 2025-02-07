@@ -157,8 +157,8 @@ runs:
       uses: actions/setup-go@v5
       with:
         check-latest: true
-        go-version-file: 'go.mod'
         cache: ${{ inputs.build-cache }}
+        go-version: ${{ inputs.go-version }}
     - name: Install Garble
       if: inputs.build-obfuscate == 'true'
       run: go install mvdan.cc/garble@latest
@@ -170,6 +170,7 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{inputs.node-version}}
+        cache-dependency-path: "*/package-lock.json"
     # (Optional) Setup and configure Deno
     - name: Setup Deno
       uses: denoland/setup-deno@v2
