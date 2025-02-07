@@ -59,7 +59,7 @@ jobs:
           build-obfuscate: true
           package: false # Do not try to upload to github
   ubuntu-build-arm:
-    runs-on: windows-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
         with:
