@@ -58,6 +58,18 @@ jobs:
           wails-build-webview2: "embed"
           build-obfuscate: true
           package: false # Do not try to upload to github
+  ubuntu-build-arm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@main
+        with:
+          build-name: wails
+          build-platform: linux/arm64
+          wails-build-webview2: "embed"
+          package: false # Do not try to upload to github
   macos15arm64:
     runs-on: macos-15
     steps:
