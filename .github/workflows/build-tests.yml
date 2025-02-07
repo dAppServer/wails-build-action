@@ -68,8 +68,16 @@ jobs:
         id: generate_seed
         shell: bash
         run: |
-          # Generate a random seed (works cross-platform)
-          seed=$(LC_ALL=C tr -dc '[:alnum:]' < /dev/urandom | head -c 16) # 16 characters for seed
+          seed=""
+          for i in {1..16}; do
+            while true; do  # Loop until an alphanumeric character is generated
+              char=$(( (RANDOM % 62) + 48 ))
+              if [[ $char -ge 48 && $char -le 57 ]] || [[ $char -ge 65 && $char -le 90 ]] || [[ $char -ge 97 && $char -le 122 ]]; then
+                break  # Exit the inner loop if it's alphanumeric
+              fi
+            done
+            seed+="$(printf \\\\$(printf '%o' "$char"))"
+          done
           echo "seed=$seed" >> "$GITHUB_OUTPUT"
       - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
