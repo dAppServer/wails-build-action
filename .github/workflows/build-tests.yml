@@ -1,53 +1,43 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main", "v2", "v3", "dev" ]
   pull_request:
     branches: [ "main", "v2", "v3", "dev" ]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   ubuntu2404:
-    # The type of runner that the job will run on
     runs-on: ubuntu-24.04
-    defaults:
-      run:
-        shell: bash
-        working-directory: wails
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean
           build-platform: linux/amd64
           build-tags: webkit2_41
           wails-build-webview2: "embed"
-  ubuntu2004:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-20.04
-    defaults:
-      run:
-        shell: bash
-        working-directory: wails
-    # Steps represent a sequence of tasks that will be executed as part of the job
+  ubuntu2204:
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: dAppServer/wails-build-action@main
+        with:
+          build-name: lethean
+          build-platform: linux/amd64
+          wails-build-webview2: "embed"
+  ubuntu2004:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean
@@ -55,11 +45,7 @@ jobs:
           wails-build-webview2: "embed"
   macos:
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: wails
     steps:
-      # Checkout code
       - uses: actions/checkout@v4
         with:
           submodules: recursive
@@ -78,11 +64,7 @@ jobs:
 
   windows:
     runs-on: windows-2022
-    defaults:
-      run:
-        working-directory: wails
     steps:
-      # Checkout code
       - uses: actions/checkout@v4
         with:
           submodules: recursive
@@ -94,12 +76,7 @@ jobs:
           nsis: 'false'
   windows-nsis:
     runs-on: windows-2022
-    defaults:
-      run:
-        shell: bash
-        working-directory: wails
     steps:
-      # Checkout code
       - uses: actions/checkout@v4
         with:
           submodules: recursive
