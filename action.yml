@@ -26,7 +26,7 @@ inputs:
   build-cache:
     description: "Cache the build"
     required: false
-    default: "false"
+    default: "true"
   build-platform:
     description: "Platform to build for"
     required: false
