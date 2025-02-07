@@ -68,6 +68,7 @@ jobs:
         with:
           build-name: wails
           build-platform: linux/arm64
+          build-cache: 'false'
           wails-build-webview2: "embed"
           package: false # Do not try to upload to github
   macos15arm64:
