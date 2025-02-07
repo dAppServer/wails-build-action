@@ -127,7 +127,7 @@ runs:
           echo "Unsupported Linux distribution: $DISTRO"
           exit 1 # Fail the workflow if the distribution is not supported
         fi
-        echo "DISTRO=$DISTRO" >> "$GITHUN_OUPUT"
+        echo "DISTRO=$DISTRO" >> "$GITHUB_OUTPUT"
       shell: bash
     - name: Setup Build Options
       id: build_options
@@ -151,7 +151,7 @@ runs:
         if [[ ${{ inputs.nsis }} == true ]]; then
           build_options+=' -nsis'
         fi
-        echo "BUILD_OPTIONS=$build_options" >> "$GITHUN_OUPUT"
+        echo "BUILD_OPTIONS=$build_options" >> "$GITHUB_OUTPUT"
     # Setup and configure GoLang
     - name: Setup GoLang
       uses: actions/setup-go@v4
