@@ -164,7 +164,7 @@ runs:
       uses: actions/setup-go@v5
       with:
         check-latest: true
-        cache: 'modules'
+        cache: ${{ inputs.build-cache }}
         cache-dependency-path: 'go.sum'
         go-version: ${{ inputs.go-version }}
     - name: Install Garble
