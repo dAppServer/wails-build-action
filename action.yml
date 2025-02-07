@@ -181,6 +181,7 @@ runs:
             build_options+=' -tags "${{inputs.build-tags}}"'
           fi
         fi
+        echo "SNIDER: ${{ inputs.nsis }}"
         if [[ "${{ inputs.nsis }}" == 'true' ]]; then
           build_options+=' -nsis'
         fi
