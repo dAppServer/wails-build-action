@@ -19,10 +19,6 @@ jobs:
   ubuntu2404:
     # The type of runner that the job will run on
     runs-on: ubuntu-24.04
-    defaults:
-      run:
-        shell: bash
-        working-directory: wails
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -35,10 +31,6 @@ jobs:
   ubuntu2004:
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
-    defaults:
-      run:
-        shell: bash
-        working-directory: wails
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -49,9 +41,6 @@ jobs:
           wails-build-webview2: "embed"
   macos:
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: wails
     steps:
       # Checkout code
       - uses: dAppServer/wails-build-action@main
@@ -69,9 +58,6 @@ jobs:
 
   windows:
     runs-on: windows-2022
-    defaults:
-      run:
-        working-directory: wails
     steps:
       # Checkout code
       - uses: dAppServer/wails-build-action@main
@@ -82,10 +68,6 @@ jobs:
           nsis: 'false'
   windows-nsis:
     runs-on: windows-2022
-    defaults:
-      run:
-        shell: bash
-        working-directory: wails
     steps:
       # Checkout code
       - uses: dAppServer/wails-build-action@main
