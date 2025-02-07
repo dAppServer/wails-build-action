@@ -153,11 +153,19 @@ runs:
         fi
         echo "BUILD_OPTIONS=$build_options" >> "$GITHUB_OUTPUT"
     # Setup and configure GoLang
+    - name: Cache Go Modules
+      uses: actions/cache@v3
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('go.mod', 'go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
     - name: Setup GoLang
       uses: actions/setup-go@v5
       with:
         check-latest: true
-        cache: ${{ inputs.build-cache }}
+        cache: 'modules'
+        cache-dependency-path: 'go.sum'
         go-version: ${{ inputs.go-version }}
     - name: Install Garble
       if: inputs.build-obfuscate == 'true'
@@ -170,7 +178,8 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{inputs.node-version}}
-        cache-dependency-path: "*/package-lock.json"
+        cache: 'npm'
+        cache-dependency-path: "**/package-lock.json"
     # (Optional) Setup and configure Deno
     - name: Setup Deno
       uses: denoland/setup-deno@v2
