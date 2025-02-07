@@ -1,3 +1,5 @@
+07/02/2025 - Please use `dAppServer/wails-build-action@main` AND star the repo to get updated on V3, 
+
 # dAppServer/wails-build-action@v2
 GitHub action to build Wails.io, the action will install GoLang, NodeJS and run a build.
 this is to be used on a [Wails.io](https://wails.io) v2 project.
