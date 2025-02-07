@@ -23,6 +23,10 @@ inputs:
   build-name:
     description: "The name of the binary file"
     required: true
+  build-cache:
+    description: "Cache the build"
+    required: false
+    default: "true"
   build-platform:
     description: "Platform to build for"
     required: false
@@ -50,7 +54,7 @@ inputs:
   node-version:
     description: "Node js version"
     required: false
-    default: "16.x"
+    default: "18.x"
   deno-build:
     description: "This gets run into bash, use the full command"
     required: false
@@ -150,10 +154,12 @@ runs:
         echo "BUILD_OPTIONS=$build_options" >> "$GITHUB_OUTPUT"
     # Setup and configure GoLang
     - name: Setup GoLang
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v5
       with:
         check-latest: true
-        go-version: ${{inputs.go-version}}
+        cache: ${{ inputs.build-cache }}
+        cache-dependency-path: 'go.sum'
+        go-version: ${{ inputs.go-version }}
     - name: Install Garble
       if: inputs.build-obfuscate == 'true'
       run: go install mvdan.cc/garble@latest
@@ -162,9 +168,11 @@ runs:
       shell: bash
     # Setup and configure NodeJS
     - name: Setup NodeJS
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: ${{inputs.node-version}}
+        cache: 'npm'
+        cache-dependency-path: "**/package-lock.json"
     # (Optional) Setup and configure Deno
     - name: Setup Deno
       uses: denoland/setup-deno@v2
