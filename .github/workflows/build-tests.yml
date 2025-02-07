@@ -17,7 +17,7 @@ jobs:
           submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
-          build-name: lethean
+          build-name: wails
           build-platform: linux/amd64
           build-tags: webkit2_41
           wails-build-webview2: "embed"
@@ -30,7 +30,7 @@ jobs:
           submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
-          build-name: lethean
+          build-name: wails
           build-platform: linux/amd64
           wails-build-webview2: "embed"
           package: false # Do not try to upload to github
@@ -42,7 +42,7 @@ jobs:
           submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
-          build-name: lethean
+          build-name: wails
           build-platform: linux/amd64
           wails-build-webview2: "embed"
           package: false # Do not try to upload to github
@@ -54,7 +54,7 @@ jobs:
           submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
-          build-name: lethean
+          build-name: wails
           build-platform: darwin/universal
           sign: "false"
           sign-macos-apple-password: ${{ secrets.APPLE_PASSWORD }}
@@ -74,7 +74,7 @@ jobs:
           submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
-          build-name: lethean.exe
+          build-name: wails.exe
           build-platform: windows/amd64
           wails-build-webview2: "embed"
           nsis: 'false'
@@ -87,7 +87,7 @@ jobs:
           submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
-          build-name: lethean.exe
+          build-name: wails.exe
           build-platform: windows/amd64
           wails-build-webview2: "embed"
           nsis: "true"
