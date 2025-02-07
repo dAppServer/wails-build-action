@@ -161,6 +161,10 @@ runs:
       with:
         check-latest: true
         go-version: ${{inputs.go-version}}
+    - name: Install Garble
+      if: inputs.build-obfuscate == 'true'
+      run: go install mvdan.cc/garble@latest
+      shell: bash
     - run: go version
       shell: bash
     # Setup and configure NodeJS
