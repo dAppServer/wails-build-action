@@ -140,7 +140,7 @@ runs:
           build_options+=' -obfuscated'
         fi
         if [[ -n "${{ inputs.build-obfuscate-args }}" ]]; then
-          build_options+=" -garbleargs ${{ inputs.build-obfuscate-args }}"
+          build_options+=" -garbleargs '${{ inputs.build-obfuscate-args }}'"
         fi
         if [[ "${{ inputs.build-tags }}" != "false" ]]; then
           tags_string="${{ inputs.build-tags }}"
