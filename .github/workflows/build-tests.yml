@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+      - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
           build-name: wails
           build-platform: linux/amd64
@@ -28,7 +28,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+      - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
           build-name: wails
           build-platform: linux/amd64
@@ -40,7 +40,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+      - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
           build-name: wails
           build-platform: linux/amd64
@@ -52,7 +52,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+      - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
           build-name: wails
           build-platform: darwin/universal
@@ -90,7 +90,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+      - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
           build-name: wails
           build-platform: darwin/universal
@@ -147,7 +147,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+      - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
           build-name: wails
           build-platform: darwin/universal
@@ -167,7 +167,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+      - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
           build-name: wails.exe
           build-platform: windows/amd64
@@ -180,7 +180,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+      - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
           build-name: wails.exe
           build-platform: windows/amd64
@@ -193,7 +193,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+      - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
           build-name: wails.exe
           build-platform: windows/amd64
@@ -206,7 +206,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@main
+      - uses: dAppServer/wails-build-action@33-add-garble-support
         with:
           build-name: wails.exe
           build-platform: windows/amd64
