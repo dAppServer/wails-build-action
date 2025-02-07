@@ -141,7 +141,7 @@ runs:
           build_options+=' -garbleargs "${{ inputs.build-obfuscate-args }}"'
         fi
         if [[ "${{ inputs.build-tags }}" != "false" ]]; then
-          if [[ "${{ steps.linux_discovery.outputs.DISTRO }}" == '24.04' ]]; then
+          if [[ ${{!contains(inputs.build-tags, 'webkit2_41')}} && "${{ steps.linux_discovery.outputs.DISTRO }}" == '24.04' ]]; then
             build_options+=' -tags "${{inputs.build-tags}} webkit2_41"'
           else
             build_options+=' -tags "${{inputs.build-tags}}"'
@@ -180,24 +180,6 @@ runs:
     - name: Install Wails
       if: inputs.build == 'true'
       run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
-      shell: bash
-    - name: Install Linux Wails deps
-      if: inputs.build == 'true' && runner.os == 'Linux'
-      id: linux_lsb_release
-      run: |
-        sudo apt-get -yq update
-        DISTRO=$(lsb_release -rs) # Get the distribution version (e.g., "22.04", "24.04")
-        if [[ "$DISTRO" == "20.04" ]]; then
-          sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
-        elif [[ "$DISTRO" == "22.04" ]]; then
-          sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
-        elif [[ "$DISTRO" == "24.04" ]]; then
-          sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
-        else
-          echo "Unsupported Linux distribution: $DISTRO"
-          exit 1 # Fail the workflow if the distribution is not supported
-        fi
-        echo "::set-output name=linux_lsb_release::$DISTRO"
       shell: bash
     - name: Install macOS Wails deps
       if: runner.os == 'macOS'
