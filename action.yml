@@ -144,6 +144,7 @@ runs:
       if: inputs.build == 'true' && runner.os == 'Linux'
       id: linux_lsb_release
       run: |
+        sudo apt-get -yq update
         DISTRO=$(lsb_release -rs) # Get the distribution version (e.g., "22.04", "24.04")
         if [[ "$DISTRO" == "20.04" ]]; then
           sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
