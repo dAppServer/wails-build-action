@@ -153,14 +153,6 @@ runs:
         fi
         echo "BUILD_OPTIONS=$build_options" >> "$GITHUB_OUTPUT"
     # Setup and configure GoLang
-    - name: Cache Go Modules
-      uses: actions/cache@v3
-      if: inputs.build-cache == 'true'
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('go.mod', 'go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
     - name: Setup GoLang
       uses: actions/setup-go@v5
       with:
