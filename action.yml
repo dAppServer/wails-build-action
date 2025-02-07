@@ -141,7 +141,7 @@ runs:
           build_options+=' -garbleargs "${{ inputs.build-obfuscate-args }}"'
         fi
         if [[ "${{ inputs.build-tags }}" != "false" ]]; then
-          if [[ ${{!contains(inputs.build-tags, 'webkit2_41')}} && "${{ steps.linux_discovery.outputs.DISTRO }}" == '24.04' ]]; then
+          if [[ "${{ steps.linux_discovery.outputs.DISTRO }}" == '24.04' ]]; then
             build_options+=' -tags "${{inputs.build-tags}} webkit2_41"'
           else
             build_options+=' -tags "${{inputs.build-tags}}"'
