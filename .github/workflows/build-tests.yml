@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "main", "v2", "v3", "dev" ]
+    branches: [ "main", "v2", "v3", "dev", "*-*" ]
   pull_request:
-    branches: [ "main", "v2", "v3", "dev" ]
+    branches: [ "main", "v2", "v3", "dev", "*-*" ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -160,7 +160,6 @@ jobs:
           sign-macos-installer-cert: ${{ secrets.MAC_DEVELOPER_INSTALL_CERT }}
           sign-macos-installer-cert-password: ${{ secrets.MAC_DEVELOPER_INSTALL_PASS }}
           package: false # Do not try to upload to github
-
 
   windows2025:
     runs-on: windows-2025

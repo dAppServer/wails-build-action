@@ -31,6 +31,14 @@ inputs:
     description: "Build tags to pass to Go compiler. Must be quoted. Space or comma (but not both) separated"
     required: false
     default: ""
+  build-obfuscate:
+    description: "Obfuscate the build"
+    required: false
+    default: "false"
+  build-obfuscate-args:
+    description: "-garbleargs \"INPUT HERE\""
+    required: false
+    default: ""
   wails-version:
     description: "Wails version to use"
     required: false
@@ -118,7 +126,7 @@ runs:
         node-version: ${{inputs.node-version}}
     # (Optional) Setup and configure Deno
     - name: Setup Deno
-      uses: denoland/setup-deno@v1
+      uses: denoland/setup-deno@v2
       if: inputs.deno-build != ''
       with:
         deno-version: ${{inputs.deno-version}}
@@ -145,25 +153,28 @@ runs:
       run: brew install mitchellh/gon/gon
       shell: bash
     # Building step
+    - name: Set build Options
+      id: build_options
+      shell: bash
+      run: |
+          build_options="${{ inputs.build-tags }}"
+          if [[ "${{ inputs.build-obfuscate }}" == 'true' ]]; then
+            build_options+=' -obfuscated'
+          fi
+          if [[ "${{ inputs.build-obfuscate-args }}" != '' ]]; then
+            build_options+=' -garbleargs "${{ inputs.build-obfuscate-args }}"'
+          fi
+          if [[ "${{ inputs.build-tags }}" != '' ]]; then
+            build_options+=' -tags "${{inputs.build-tags}}"'
+          fi
+          if [[ "${{ inputs.nsis }}" == 'true' ]]; then
+            build_options+=' -nsis'
+          fi
+          echo "::set-output name=build_options::$build_options"
     - name: Build App
-      if: inputs.build == 'true' && runner.os == 'macOS'
+      if: inputs.build == 'true'
       working-directory: ${{ inputs.app-working-directory }}
-      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}} -tags '${{inputs.build-tags}}'
-      shell: bash
-    - name: Build App
-      if: inputs.build == 'true' &&  runner.os == 'Linux'
-      working-directory: ${{ inputs.app-working-directory }}
-      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}} -tags '${{inputs.build-tags}}'
-      shell: bash
-    - name: Build Windows App
-      if: inputs.build == 'true' && runner.os == 'Windows' && inputs.nsis == 'false'
-      working-directory: ${{ inputs.app-working-directory }}
-      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}} -tags '${{inputs.build-tags}}'
-      shell: bash
-    - name: Build Windows App + Installer
-      if: inputs.build == 'true' && runner.os == 'Windows' && inputs.nsis == 'true'
-      working-directory: ${{ inputs.app-working-directory }}
-      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -nsis -o ${{inputs.build-name}} -tags '${{inputs.build-tags}}'
+      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}} ${{ steps.build_options.outputs.build_options }}
       shell: bash
     - name: Add macOS perms
       if: inputs.build == 'true' && runner.os == 'macOS'
