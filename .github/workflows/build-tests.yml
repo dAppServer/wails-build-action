@@ -45,6 +45,40 @@ jobs:
           build-platform: linux/amd64
           wails-build-webview2: "embed"
           package: false # Do not try to upload to github
+  ubuntu-obfuscate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@33-add-garble-support
+        with:
+          build-name: wails
+          build-platform: linux/amd64
+          wails-build-webview2: "embed"
+          build-obfuscate: true
+          package: false # Do not try to upload to github
+  ubuntu-obfuscate-supply-seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Generate Random Seed
+        id: generate_seed
+        shell: bash
+        run: |
+          # Generate a random seed (works cross-platform)
+          seed=$(LC_ALL=C tr -dc '[:alnum:]' < /dev/urandom | head -c 16) # 16 characters for seed
+          echo "seed=$seed" >> "$GITHUB_OUTPUT"
+      - uses: dAppServer/wails-build-action@33-add-garble-support
+        with:
+          build-name: wails
+          build-platform: linux/amd64
+          wails-build-webview2: "embed"
+          build-obfuscate: true
+          build-obfuscate-args: "-literals -tiny -seed=${{ steps.generate_seed.outputs.seed }}"
+          package: false # Do not try to upload to github
   macos15arm64:
     runs-on: macos-15
     steps:
