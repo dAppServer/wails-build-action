@@ -155,6 +155,7 @@ runs:
     # Setup and configure GoLang
     - name: Cache Go Modules
       uses: actions/cache@v3
+      if: inputs.build-cache == 'true'
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('go.mod', 'go.sum') }}
