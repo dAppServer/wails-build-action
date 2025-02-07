@@ -166,13 +166,6 @@ runs:
       shell: bash
     - run: go version
       shell: bash
-    # Setup and configure NodeJS
-    - name: Setup NodeJS
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{inputs.node-version}}
-        cache: 'npm'
-        cache-dependency-path: "**/package-lock.json"
     # (Optional) Setup and configure Deno
     - name: Setup Deno
       uses: denoland/setup-deno@v2
