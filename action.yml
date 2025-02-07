@@ -35,10 +35,6 @@ inputs:
     description: "Obfuscate the build"
     required: false
     default: "false"
-  build-obfuscate-args:
-    description: "-garbleargs \"INPUT HERE\""
-    required: false
-    default: ""
   wails-version:
     description: "Wails version to use"
     required: false
@@ -138,9 +134,6 @@ runs:
         build_options=""
         if ${{ inputs.build-obfuscate == 'true' }}; then
           build_options+=' -obfuscated'
-        fi
-        if [[ -n "${{ inputs.build-obfuscate-args }}" ]]; then
-          build_options+=' -garbleargs "${{ inputs.build-obfuscate-args }}"'
         fi
         if [[ "${{ inputs.build-tags }}" != "false" ]]; then
           tags_string="${{ inputs.build-tags }}"
