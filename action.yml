@@ -19,7 +19,7 @@ inputs:
   nsis:
     description: "Build a Windows Installer"
     required: false
-    default: "true"
+    default: "false"
   build-name:
     description: "The name of the binary file"
     required: true
@@ -30,7 +30,11 @@ inputs:
   build-tags:
     description: "Build tags to pass to Go compiler. Must be quoted. Space or comma (but not both) separated"
     required: false
-    default: ""
+    default: "false"
+  build-obfuscate:
+    description: "Obfuscate the build"
+    required: false
+    default: "false"
   wails-version:
     description: "Wails version to use"
     required: false
@@ -103,12 +107,57 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Linux Discovery
+      if: runner.os == 'Linux'
+      id: linux_discovery
+      run: |
+        sudo apt-get -yq update
+        DISTRO=$(lsb_release -rs) # Get the distribution version (e.g., "22.04", "24.04")
+        if [[ "$DISTRO" == "20.04" ]]; then
+          sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
+        elif [[ "$DISTRO" == "22.04" ]]; then
+          sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
+        elif [[ "$DISTRO" == "24.04" ]]; then
+          sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
+        else
+          echo "Unsupported Linux distribution: $DISTRO"
+          exit 1 # Fail the workflow if the distribution is not supported
+        fi
+        echo "DISTRO=$DISTRO" >> "$GITHUB_OUTPUT"
+      shell: bash
+    - name: Setup Build Options
+      id: build_options
+      shell: bash
+      env:
+        DISTRO: ${{ steps.linux_discovery.outputs.DISTRO }}
+      run: |
+        build_options=""
+        if ${{ inputs.build-obfuscate == 'true' }}; then
+          build_options+=' -obfuscated'
+        fi
+        if [[ "${{ inputs.build-tags }}" != "false" ]]; then
+          tags_string="${{ inputs.build-tags }}"
+          if [[ "$DISTRO" == '24.04' ]]; then
+            tags_string+=" webkit2_41"
+          fi
+          build_options+=" -tags $tags_string" 
+        elif [[ "${{ inputs.build-tags }}" == "false" && "$DISTRO" == '24.04' ]]; then 
+          build_options+=" -tags webkit2_41"
+        fi
+        if ${{ inputs.nsis == true }}; then
+          build_options+=' -nsis'
+        fi
+        echo "BUILD_OPTIONS=$build_options" >> "$GITHUB_OUTPUT"
     # Setup and configure GoLang
     - name: Setup GoLang
       uses: actions/setup-go@v4
       with:
         check-latest: true
         go-version: ${{inputs.go-version}}
+    - name: Install Garble
+      if: inputs.build-obfuscate == 'true'
+      run: go install mvdan.cc/garble@latest
+      shell: bash
     - run: go version
       shell: bash
     # Setup and configure NodeJS
@@ -118,7 +167,7 @@ runs:
         node-version: ${{inputs.node-version}}
     # (Optional) Setup and configure Deno
     - name: Setup Deno
-      uses: denoland/setup-deno@v1
+      uses: denoland/setup-deno@v2
       if: inputs.deno-build != ''
       with:
         deno-version: ${{inputs.deno-version}}
@@ -132,38 +181,17 @@ runs:
       if: inputs.build == 'true'
       run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
       shell: bash
-    - name: Install Linux Wails deps
-      if: inputs.build == 'true' && runner.os == 'Linux' && !contains(inputs.build-tags, 'webkit2_41')
-      run: sudo apt-get update && sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.0-dev gcc-aarch64-linux-gnu
-      shell: bash
-    - name: Install Linux Wails deps
-      if: inputs.build == 'true' && runner.os == 'Linux' && contains(inputs.build-tags, 'webkit2_41')
-      run: sudo apt-get update && sudo apt-get -yq install libgtk-3-0 libwebkit2gtk-4.1-dev gcc-aarch64-linux-gnu
-      shell: bash
     - name: Install macOS Wails deps
       if: runner.os == 'macOS'
       run: brew install mitchellh/gon/gon
       shell: bash
     # Building step
     - name: Build App
-      if: inputs.build == 'true' && runner.os == 'macOS'
+      if: inputs.build == 'true'
+      env:
+        BUILD_OPTIONS: ${{ steps.build_options.outputs.BUILD_OPTIONS }}
       working-directory: ${{ inputs.app-working-directory }}
-      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}} -tags '${{inputs.build-tags}}'
-      shell: bash
-    - name: Build App
-      if: inputs.build == 'true' &&  runner.os == 'Linux'
-      working-directory: ${{ inputs.app-working-directory }}
-      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}} -tags '${{inputs.build-tags}}'
-      shell: bash
-    - name: Build Windows App
-      if: inputs.build == 'true' && runner.os == 'Windows' && inputs.nsis == 'false'
-      working-directory: ${{ inputs.app-working-directory }}
-      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}} -tags '${{inputs.build-tags}}'
-      shell: bash
-    - name: Build Windows App + Installer
-      if: inputs.build == 'true' && runner.os == 'Windows' && inputs.nsis == 'true'
-      working-directory: ${{ inputs.app-working-directory }}
-      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -nsis -o ${{inputs.build-name}} -tags '${{inputs.build-tags}}'
+      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}} $BUILD_OPTIONS
       shell: bash
     - name: Add macOS perms
       if: inputs.build == 'true' && runner.os == 'macOS'

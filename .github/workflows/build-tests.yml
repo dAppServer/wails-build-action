@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ "main", "v2", "v3", "dev" ]
+    branches: [ "main", "v2", "v3", "dev", "*-*" ]
   pull_request:
-    branches: [ "main", "v2", "v3", "dev" ]
+    branches: [ "main", "v2", "v3", "dev", "*-*" ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -19,7 +19,6 @@ jobs:
         with:
           build-name: wails
           build-platform: linux/amd64
-          build-tags: webkit2_41
           wails-build-webview2: "embed"
           package: false # Do not try to upload to github
   ubuntu2204:
@@ -45,6 +44,19 @@ jobs:
           build-name: wails
           build-platform: linux/amd64
           wails-build-webview2: "embed"
+          package: false # Do not try to upload to github
+  ubuntu-obfuscate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@main
+        with:
+          build-name: wails
+          build-platform: linux/amd64
+          wails-build-webview2: "embed"
+          build-obfuscate: true
           package: false # Do not try to upload to github
   macos15arm64:
     runs-on: macos-15
@@ -160,7 +172,18 @@ jobs:
           sign-macos-installer-cert: ${{ secrets.MAC_DEVELOPER_INSTALL_CERT }}
           sign-macos-installer-cert-password: ${{ secrets.MAC_DEVELOPER_INSTALL_PASS }}
           package: false # Do not try to upload to github
-
+  macos-obfuscate:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@main
+        with:
+          build-name: wails
+          build-platform: darwin/universal
+          build-obfuscate: true
+          package: false # Do not try to upload to github
 
   windows2025:
     runs-on: windows-2025
@@ -213,4 +236,17 @@ jobs:
           build-platform: windows/amd64
           wails-build-webview2: "embed"
           nsis: "true"
+          package: false # Do not try to upload to github
+  windows-obfuscate:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: dAppServer/wails-build-action@main
+        with:
+          build-name: wails.exe
+          build-platform: windows/amd64
+          wails-build-webview2: "embed"
+          build-obfuscate: true
           package: false # Do not try to upload to github
