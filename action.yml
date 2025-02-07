@@ -182,7 +182,7 @@ runs:
           fi
         fi
         echo "SNIDER: ${{ inputs.nsis }}"
-        if [[ "${{ inputs.nsis }}" == 'true' ]]; then
+        if [[ "${{ inputs.nsis }}" == true ]]; then
           build_options+=' -nsis'
         fi
         if [[ "${{ steps.linux_lsb_release.outputs.DISTRO }}" == '24.04' ]]; then
