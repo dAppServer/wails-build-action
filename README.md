@@ -1,14 +1,14 @@
-07/02/2025 - Please use `dAppServer/wails-build-action@main` AND star the repo to get updated on V3, 
+07/02/2025 - Please use `dAppServer/wails-build-action@main` AND star the repo to get updated on V3, the readme refers to a future version
 
 # dAppServer/wails-build-action@v2
-GitHub action to build Wails.io, the action will install GoLang, NodeJS and run a build.
-this is to be used on a [Wails.io](https://wails.io) v2 project.
+GitHub action to build Wails.io: the action will install GoLang and NodeJS and run a build.
+This will be used on a [Wails.io](https://wails.io) v2 project.
 
-By default, the action will build and upload the results to github, on a tagged build it will also upload to the release.
+By default, the action will build and upload the results to Git Hub; on a tagged build, it will also upload to the release.
 
 # Default build
 ```yaml
-- uses: dAppServer/wails-build-action@v2.2
+- uses: dAppServer/wails-build-action@v3
   with:
     build-name: wailsApp
     build-platform: linux/amd64
@@ -17,7 +17,7 @@ By default, the action will build and upload the results to github, on a tagged 
 ## Build with No uploading
 
 ```yaml
-- uses: dAppServer/wails-build-action@v2.2
+- uses: dAppServer/wails-build-action@v3
   with:
     build-name: wailsApp
     build-platform: linux/amd64
@@ -76,10 +76,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
-      - uses: dAppServer/wails-build-action@v2.2
+      - uses: dAppServer/wails-build-action@v3
         with:
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
+          build-obfuscate: true
 ```
 
 ## MacOS Code Signing
@@ -87,7 +88,7 @@ jobs:
 You need to make two gon configuration files, this is because we need to sign and notarize the .app before making an installer with it.
 
 ```yaml
-  - uses: dAppServer/wails-build-action@v2.1
+  - uses: dAppServer/wails-build-action@v3
     with:
       build-name: wailsApp
       sign: true
