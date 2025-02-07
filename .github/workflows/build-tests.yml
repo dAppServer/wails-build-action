@@ -6,9 +6,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main", "v2" ]
+    branches: [ "main", "v2", "v3", "dev" ]
   pull_request:
-    branches: [ "main", "v2" ]
+    branches: [ "main", "v2", "v3", "dev" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -16,55 +16,48 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  ubuntu-latest:
+  ubuntu2404:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: wails
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          repository: 'letheanVPN/desktop'
-          submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean
           build-platform: linux/amd64
           build-tags: webkit2_41
           wails-build-webview2: "embed"
-          wails-version: v2.3.1
   ubuntu2004:
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
-
+    defaults:
+      run:
+        shell: bash
+        working-directory: wails
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          repository: 'letheanVPN/desktop'
-          submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean
           build-platform: linux/amd64
           wails-build-webview2: "embed"
-          wails-version: v2.3.1
   macos:
     runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: wails
     steps:
       # Checkout code
-      - uses: actions/checkout@v2
-        with:
-          repository: 'letheanVPN/desktop'
-          submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean
           build-platform: darwin/universal
-          wails-version: "v2.3.1"
-          go-version: ^1.18
           sign: "false"
           sign-macos-apple-password: ${{ secrets.APPLE_PASSWORD }}
           sign-macos-app-id: "Developer ID Application: Lethean LTD (W2DNA5L5DY)"
@@ -76,33 +69,28 @@ jobs:
 
   windows:
     runs-on: windows-2022
+    defaults:
+      run:
+        working-directory: wails
     steps:
       # Checkout code
-      - uses: actions/checkout@v2
-        with:
-          repository: 'letheanVPN/desktop'
-          submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean.exe
           build-platform: windows/amd64
           wails-build-webview2: "embed"
-          wails-version: v2.3.1
-          go-version: ^1.18
           nsis: 'false'
   windows-nsis:
     runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
+        working-directory: wails
     steps:
       # Checkout code
-      - uses: actions/checkout@v2
-        with:
-          repository: 'letheanVPN/desktop'
-          submodules: recursive
       - uses: dAppServer/wails-build-action@main
         with:
           build-name: lethean.exe
           build-platform: windows/amd64
           wails-build-webview2: "embed"
-          wails-version: v2.3.1
-          go-version: ^1.18
           nsis: "true"
