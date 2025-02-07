@@ -28,6 +28,8 @@ By default, the action will build and upload the results to github, on a tagged 
 | Name                                 | Default              | Description                                        |
 |--------------------------------------|----------------------|----------------------------------------------------|
 | `build-name`                         | none, required input | The name of the binary                             |
+| `build-obfuscate`                    | `false`              | Obfuscate the binary                               |
+| `build-obfuscate-args`               | `''`                 | Arguments to pass to the obfuscator                |
 | `build`                              | `true`               | Runs `wails build` on your source                  |
 | `nsis`                               | `true`               | Runs `wails build` with or without -nsis           |
 | `sign`                               | `false`              | After build, signs and creates signed installers   |

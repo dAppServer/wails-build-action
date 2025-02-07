@@ -140,7 +140,7 @@ runs:
           build_options+=' -obfuscated'
         fi
         if [[ -n "${{ inputs.build-obfuscate-args }}" ]]; then
-          build_options+=" -garbleargs '${{ inputs.build-obfuscate-args }}'"
+          build_options+=' -garbleargs \"${{ inputs.build-obfuscate-args }}\"'
         fi
         if [[ "${{ inputs.build-tags }}" != "false" ]]; then
           tags_string="${{ inputs.build-tags }}"
@@ -198,7 +198,7 @@ runs:
       env:
         BUILD_OPTIONS: ${{ steps.build_options.outputs.BUILD_OPTIONS }}
       working-directory: ${{ inputs.app-working-directory }}
-      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}} $BUILD_OPTIONS
+      run: wails build --platform ${{inputs.build-platform}} -webview2 ${{inputs.wails-build-webview2}} -o ${{inputs.build-name}} "$BUILD_OPTIONS"
       shell: bash
     - name: Add macOS perms
       if: inputs.build == 'true' && runner.os == 'macOS'
