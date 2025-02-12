@@ -107,7 +107,10 @@ inputs:
     description: "Windows Signing Certificate Password"
     required: false
     default: ''
-
+  wails-dev-build:
+    description: "Use provided wails"
+    required: false
+    default: "false"
 runs:
   using: "composite"
   steps:
@@ -155,6 +158,7 @@ runs:
     # Setup and configure GoLang
     - name: Setup GoLang
       uses: actions/setup-go@v5
+      if: inputs.wails-dev-build == 'false'
       with:
         check-latest: true
         cache: ${{ inputs.build-cache }}
@@ -179,7 +183,7 @@ runs:
       run: ${{inputs.deno-build}}
     # install wails
     - name: Install Wails
-      if: inputs.build == 'true'
+      if: inputs.build == 'true' && inputs.wails-dev-build == 'false'
       run: go install github.com/wailsapp/wails/v2/cmd/wails@${{inputs.wails-version}}
       shell: bash
     - name: Install macOS Wails deps
