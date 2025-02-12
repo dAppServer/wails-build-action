@@ -148,7 +148,7 @@ runs:
         elif [[ "${{ inputs.build-tags }}" == "false" && "$DISTRO" == '24.04' ]]; then 
           build_options+=" -tags webkit2_41"
         fi
-        if ${{ inputs.nsis == true }}; then
+        if ${{ inputs.nsis == 'true' }}; then
           build_options+=' -nsis'
         fi
         echo "BUILD_OPTIONS=$build_options" >> "$GITHUB_OUTPUT"
