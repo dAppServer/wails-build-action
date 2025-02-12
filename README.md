@@ -1,5 +1,3 @@
-WAILS BUILD ISSUE: https://github.com/dAppServer/wails-build-action/issues/39
-
 07/02/2025 - Please use `dAppServer/wails-build-action@main` AND star the repo to get updated on V3, the readme refers to a future version
 
 # dAppServer/wails-build-action@v2
