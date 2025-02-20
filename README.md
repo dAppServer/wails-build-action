@@ -1,3 +1,5 @@
+20/02/2025 - Wails Version 2.10.0 is problematic, please use `wails-version: "v2.9.0"` & report the bug if you get issues, tyvm <3
+
 07/02/2025 - Please use `dAppServer/wails-build-action@main` AND star the repo to get updated on V3, the readme refers to a future version
 
 # dAppServer/wails-build-action@v2
