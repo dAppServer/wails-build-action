@@ -69,6 +69,7 @@ jobs:
           build-name: wails
           build-platform: darwin/universal
           sign: "false"
+          wails-version: "v2.9.0"
           sign-macos-apple-password: ${{ secrets.APPLE_PASSWORD }}
           sign-macos-app-id: "Developer ID Application: Lethean LTD (W2DNA5L5DY)"
           sign-macos-app-cert: ${{ secrets.MAC_DEVELOPER_CERT }}
@@ -107,6 +108,7 @@ jobs:
           build-name: wails
           build-platform: darwin/universal
           sign: "false"
+          wails-version: "v2.9.0"
           sign-macos-apple-password: ${{ secrets.APPLE_PASSWORD }}
           sign-macos-app-id: "Developer ID Application: Lethean LTD (W2DNA5L5DY)"
           sign-macos-app-cert: ${{ secrets.MAC_DEVELOPER_CERT }}
@@ -164,6 +166,7 @@ jobs:
           build-name: wails
           build-platform: darwin/universal
           sign: "false"
+          wails-version: "v2.9.0"
           sign-macos-apple-password: ${{ secrets.APPLE_PASSWORD }}
           sign-macos-app-id: "Developer ID Application: Lethean LTD (W2DNA5L5DY)"
           sign-macos-app-cert: ${{ secrets.MAC_DEVELOPER_CERT }}
@@ -183,6 +186,7 @@ jobs:
           build-name: wails
           build-platform: darwin/universal
           build-obfuscate: true
+          wails-version: "v2.9.0"
           package: false # Do not try to upload to github
 
   windows2025:
