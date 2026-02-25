@@ -37,6 +37,11 @@ inputs:
   deno-working-directory:
     required: false
     default: "."
+  # Signing
+  sign:
+    description: "Whether code signing is enabled; passed to setup/go to conditionally install gon on macOS"
+    required: false
+    default: "false"
   # Conan (placeholder)
   conan-enable:
     required: false
@@ -52,6 +57,7 @@ runs:
         build-obfuscate: ${{ inputs.build-obfuscate }}
         wails-version: ${{ inputs.wails-version }}
         wails-dev-build: ${{ inputs.wails-dev-build }}
+        sign: ${{ inputs.sign }}
     - name: Setup Node/npm
       uses: ./actions/setup/npm
       with:

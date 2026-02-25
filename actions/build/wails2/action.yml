@@ -202,6 +202,7 @@ runs:
         build-obfuscate: ${{ steps.wcfg.outputs.OBFUSCATE }}
         wails-version: ${{ steps.wcfg.outputs.WAILS_VER }}
         wails-dev-build: ${{ inputs.wails-dev-build }}
+        sign: ${{ inputs.sign }}
         node-version: ${{ steps.wcfg.outputs.NODE_VER }}
         npm-working-directory: ${{ inputs.app-working-directory }}
         npm-install: 'true'

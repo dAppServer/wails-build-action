@@ -16,6 +16,10 @@ inputs:
   wails-dev-build:
     required: false
     default: "false"
+  sign:
+    description: "Whether code signing is enabled; skips gon installation when false"
+    required: false
+    default: "false"
 runs:
   using: "composite"
   steps:
@@ -38,6 +42,6 @@ runs:
       run: go install github.com/wailsapp/wails/v2/cmd/wails@${{ inputs.wails-version }}
       shell: bash
     - name: Install macOS deps (gon)
-      if: runner.os == 'macOS'
+      if: runner.os == 'macOS' && inputs.sign == 'true'
       run: brew install mitchellh/gon/gon
       shell: bash
